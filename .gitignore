@@ -1,0 +1,47 @@
+# Laravel directories and files to ignore
+/vendor/
+.env
+.phpunit.result.cache
+/storage/*.key
+/storage/app/public
+/storage/debugbar
+/storage/logs
+/public/storage
+
+# Laravel cache files
+bootstrap/cache/*.php
+bootstrap/cache/packages.php
+bootstrap/cache/services.php
+bootstrap/cache/config.php
+
+# Node.js directories and files
+/node_modules/
+/public/hot
+/public/storage
+/public/mix-manifest.json
+
+# Vite
+/vite.config.js
+/public/build
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE-specific files
+.idea/
+*.sublime-project
+*.sublime-workspace
+.vscode/
+
+# Composer files
+composer.phar
+
+# Git and other system files
+*.log
+*.sql
+*.sqlite
+*.env.backup
+*.env.local
+*.env.production
+*.env.testing
