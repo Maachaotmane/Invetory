@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('payment_reminders', function (Blueprint $table) {
-            $table->id('reminder_id');
+            $table->id();
             $table->foreignId('sale_id')->constrained('sales')->onDelete('cascade');
             $table->dateTime('reminder_date');
             $table->enum('status', ['Sent', 'Pending'])->default('Pending');

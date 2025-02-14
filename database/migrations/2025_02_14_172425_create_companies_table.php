@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('companies', function (Blueprint $table) {
-            $table->id('company_id');
+            $table->id();
             $table->string('name');
             $table->enum('type', ['Stock', 'Reseller']);
             $table->string('address');

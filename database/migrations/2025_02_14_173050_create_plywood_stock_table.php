@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('plywood_stock', function (Blueprint $table) {
-            $table->id('plywood_id');
+            $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->string('size');
             $table->string('color');

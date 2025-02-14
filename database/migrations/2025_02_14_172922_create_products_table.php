@@ -11,10 +11,10 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id('product_id');
+            $table->id();
             $table->foreignId('company_id')->constrained('companies')->onDelete('cascade');
             $table->enum('product_type', ['Burden', 'Plywood']);
-            $table->string('quality')->nullable(); 
+            $table->string('quality')->nullable();
             $table->string('marque')->nullable();
             $table->timestamps();
         });

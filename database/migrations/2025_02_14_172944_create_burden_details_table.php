@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up()
     {
         Schema::create('burden_details', function (Blueprint $table) {
-            $table->id('burden_id');
+            $table->id();
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade');
             $table->string('size');
             $table->integer('initial_quantity');
