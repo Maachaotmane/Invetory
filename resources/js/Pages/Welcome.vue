@@ -149,8 +149,8 @@ function handleImageError() {
                                             framework. Whether you are a
                                             newcomer or have prior experience
                                             with Laravel, we recommend reading
-                                            our documentation from beginning to
-                                            end.
+                                            our documentation from the beginning to
+                                            the end.
                                         </p>
                                     </div>
                                 </div>
