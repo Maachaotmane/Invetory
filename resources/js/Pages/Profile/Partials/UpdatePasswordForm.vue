@@ -12,16 +12,26 @@
                     <div class="col-lg-6 col-sm-12">
                         <div class="input-blocks">
                             <label class="form-label">Current Password</label>
-                            <input
-                                type="password"
-                                class="form-control"
-                                :class="{ 'is-invalid': form.errors.current_password }"
-                                v-model="form.current_password"
-                                required
-                                autocomplete="current-password"
-                                ref="currentPasswordInput"
-                                aria-describedby="currentPasswordError"
-                            />
+                            <div class="pass-group">
+                                <input
+                                    class="form-control"
+                                    :class="{ 'is-invalid': form.errors.current_password }"
+                                    v-model="form.current_password"
+                                    required
+                                    autocomplete="current-password"
+                                    ref="currentPasswordInput"
+                                    aria-describedby="currentPasswordError"
+                                    :type="showCurrentPassword ? 'text' : 'password'"
+                                />
+                                <span
+                                    class="toggle-password"
+                                    @click="toggleShowCurrentPassword"
+                                >
+                                    <i
+                                        :class="showCurrentPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                                    ></i>
+                                </span>
+                            </div>
                             <div id="currentPasswordError" class="invalid-feedback">
                                 {{ form.errors.current_password }}
                             </div>
@@ -30,16 +40,26 @@
                     <div class="col-lg-6 col-sm-12">
                         <div class="input-blocks">
                             <label class="form-label">New Password</label>
-                            <input
-                                type="password"
-                                class="form-control"
-                                :class="{ 'is-invalid': form.errors.password }"
-                                v-model="form.password"
-                                required
-                                autocomplete="new-password"
-                                ref="passwordInput"
-                                aria-describedby="passwordError"
-                            />
+                            <div class="pass-group">
+                                <input
+                                    class="form-control"
+                                    :class="{ 'is-invalid': form.errors.password }"
+                                    v-model="form.password"
+                                    required
+                                    autocomplete="new-password"
+                                    ref="passwordInput"
+                                    aria-describedby="passwordError"
+                                    :type="showPassword ? 'text' : 'password'"
+                                />
+                                <span
+                                    class="toggle-password"
+                                    @click="toggleShowPassword"
+                                >
+                                    <i
+                                        :class="showPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                                    ></i>
+                                </span>
+                            </div>
                             <div id="passwordError" class="invalid-feedback">
                                 {{ form.errors.password }}
                             </div>
@@ -48,15 +68,25 @@
                     <div class="col-lg-6 col-sm-12">
                         <div class="input-blocks">
                             <label class="form-label">Confirm Password</label>
-                            <input
-                                type="password"
-                                class="form-control"
-                                :class="{ 'is-invalid': form.errors.password_confirmation }"
-                                v-model="form.password_confirmation"
-                                required
-                                autocomplete="new-password"
-                                aria-describedby="passwordConfirmationError"
-                            />
+                            <div class="pass-group">
+                                <input
+                                    class="form-control"
+                                    :class="{ 'is-invalid': form.errors.password_confirmation }"
+                                    v-model="form.password_confirmation"
+                                    required
+                                    autocomplete="new-password"
+                                    aria-describedby="passwordConfirmationError"
+                                    :type="showConfirmPassword ? 'text' : 'password'"
+                                />
+                                <span
+                                    class="toggle-password"
+                                    @click="toggleShowConfirmPassword"
+                                >
+                                    <i
+                                        :class="showConfirmPassword ? 'fas fa-eye' : 'fas fa-eye-slash'"
+                                    ></i>
+                                </span>
+                            </div>
                             <div id="passwordConfirmationError" class="invalid-feedback">
                                 {{ form.errors.password_confirmation }}
                             </div>
@@ -94,11 +124,27 @@ const user = usePage().props.auth.user;
 const passwordInput = ref(null);
 const currentPasswordInput = ref(null);
 
+const showCurrentPassword = ref(false);
+const showPassword = ref(false);
+const showConfirmPassword = ref(false);
+
 const form = useForm({
     current_password: '',
     password: '',
     password_confirmation: '',
 });
+
+const toggleShowCurrentPassword = () => {
+    showCurrentPassword.value = !showCurrentPassword.value;
+};
+
+const toggleShowPassword = () => {
+    showPassword.value = !showPassword.value;
+};
+
+const toggleShowConfirmPassword = () => {
+    showConfirmPassword.value = !showConfirmPassword.value;
+};
 
 const updatePassword = () => {
     form.put(route('password.update'), {
@@ -117,3 +163,22 @@ const updatePassword = () => {
     });
 };
 </script>
+
+<style scoped>
+.pass-group {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+}
+
+.toggle-password:hover {
+    color: #495057;
+}
+</style>
