@@ -1031,7 +1031,7 @@ bg-light {
   border-bottom: 1px solid #e8ebed;
 }
 
-.btn-submit {
+.btn-submit-css {
   background: #FF9F43;
   color: #ffffff;
   font-size: 14px;
@@ -1041,17 +1041,17 @@ bg-light {
   -ms-transition: all 0.2s ease;
   transition: all 0.2s ease;
 }
-.btn-submit:hover {
+.btn-submit-css:hover {
   background: #ff8510;
   color: #ffffff;
 }
 @media (max-width: 991.98px) {
-  .btn-submit {
+  .btn-submit-css {
     min-width: auto;
   }
 }
 
-.btn-submit.chenge-btn {
+.btn-submit-css.chenge-btn {
   padding: 8px 12px;
 }
 
@@ -1080,7 +1080,7 @@ bg-light {
   min-width: 0;
 }
 
-.btn-submit.add-sale {
+.btn-submit-css.add-sale {
   padding: 8px 20px;
   min-width: 0;
 }
