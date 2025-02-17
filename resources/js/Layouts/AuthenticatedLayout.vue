@@ -1,198 +1,283 @@
-<script setup>
-import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
-
-const showingNavigationDropdown = ref(false);
-</script>
-
 <template>
-    <div>
-        <div class="min-h-screen bg-gray-100">
-            <nav
-                class="border-b border-gray-100 bg-white"
-            >
-                <!-- Primary Navigation Menu -->
-                <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="flex h-16 justify-between">
-                        <div class="flex">
-                            <!-- Logo -->
-                            <div class="flex shrink-0 items-center">
-                                <Link :href="route('dashboard')">
-                                    <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800"
-                                    />
-                                </Link>
-                            </div>
+    <!-- Header -->
+    <div class="header">
 
-                            <!-- Navigation Links -->
-                            <div
-                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
-                            >
-                                <NavLink
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div>
-                        </div>
-
-                        <div class="hidden sm:ms-6 sm:flex sm:items-center">
-                            <!-- Settings Dropdown -->
-                            <div class="relative ms-3">
-                                <Dropdown align="right" width="48">
-                                    <template #trigger>
-                                        <span class="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                class="inline-flex items-center rounded-md border border-transparent bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-500 transition duration-150 ease-in-out hover:text-gray-700 focus:outline-none"
-                                            >
-                                                {{ $page.props.auth.user.name }}
-
-                                                <svg
-                                                    class="-me-0.5 ms-2 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fill-rule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clip-rule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </template>
-
-                                    <template #content>
-                                        <DropdownLink
-                                            :href="route('profile.edit')"
-                                        >
-                                            Profile
-                                        </DropdownLink>
-                                        <DropdownLink
-                                            :href="route('logout')"
-                                            method="post"
-                                            as="button"
-                                        >
-                                            Log Out
-                                        </DropdownLink>
-                                    </template>
-                                </Dropdown>
-                            </div>
-                        </div>
-
-                        <!-- Hamburger -->
-                        <div class="-me-2 flex items-center sm:hidden">
-                            <button
-                                @click="
-                                    showingNavigationDropdown =
-                                        !showingNavigationDropdown
-                                "
-                                class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 transition duration-150 ease-in-out hover:bg-gray-100 hover:text-gray-500 focus:bg-gray-100 focus:text-gray-500 focus:outline-none"
-                            >
-                                <svg
-                                    class="h-6 w-6"
-                                    stroke="currentColor"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                >
-                                    <path
-                                        :class="{
-                                            hidden: showingNavigationDropdown,
-                                            'inline-flex':
-                                                !showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        :class="{
-                                            hidden: !showingNavigationDropdown,
-                                            'inline-flex':
-                                                showingNavigationDropdown,
-                                        }"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Responsive Navigation Menu -->
-                <div
-                    :class="{
-                        block: showingNavigationDropdown,
-                        hidden: !showingNavigationDropdown,
-                    }"
-                    class="sm:hidden"
-                >
-                    <div class="space-y-1 pb-3 pt-2">
-                        <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <!-- Responsive Settings Options -->
-                    <div
-                        class="border-t border-gray-200 pb-1 pt-4"
-                    >
-                        <div class="px-4">
-                            <div
-                                class="text-base font-medium text-gray-800"
-                            >
-                                {{ $page.props.auth.user.name }}
-                            </div>
-                            <div class="text-sm font-medium text-gray-500">
-                                {{ $page.props.auth.user.email }}
-                            </div>
-                        </div>
-
-                        <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')">
-                                Profile
-                            </ResponsiveNavLink>
-                            <ResponsiveNavLink
-                                :href="route('logout')"
-                                method="post"
-                                as="button"
-                            >
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            <!-- Page Heading -->
-            <header
-                class="bg-white shadow"
-                v-if="$slots.header"
-            >
-                <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-                    <slot name="header" />
-                </div>
-            </header>
-
-            <!-- Page Content -->
-            <main>
-                <slot />
-            </main>
+        <!-- Logo -->
+        <div class="header-left active">
+            <router-link to="/dashboard" class="logo logo-normal">
+                <img src="Assets/img/logo.png" alt="">
+            </router-link>
+            <router-link to="/dashboard" class="logo logo-white">
+                <img src="Assets/img/logo-white.png" alt="">
+            </router-link>
+            <router-link to="/dashboard" class="logo-small">
+                <img src="Assets/img/logo-small.png" alt="">
+            </router-link>
+            <a id="toggle_btn" href="javascript:void(0);" @click="toggleSidebar">
+                <vue-feather type="chevrons-left"></vue-feather>
+            </a>
         </div>
+        <!-- /Logo -->
+
+        <a id="mobile_btn" class="mobile_btn" href="javascript:void(0);" @click="toggleSidebar1">
+            <span class="bar-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </span>
+        </a>
+
+        <!-- Header Menu -->
+        <ul class="nav user-menu">
+
+            <!-- Search -->
+            <li class="nav-item nav-searchinputs">
+                <div class="top-nav-search">
+                    <a href="javascript:void(0);" class="responsive-search">
+                        <i class="fa fa-search"></i>
+                    </a>
+                    <form action="javascript:void(0);" class="dropdown">
+                        <div class="searchinputs dropdown-toggle" id="dropdownMenuClickable" data-bs-toggle="dropdown"
+                            data-bs-auto-close="false">
+                            <input type="text" placeholder="Search">
+                            <div class="search-addon">
+                                <span><vue-feather type="x-circle" class="feather-14"></vue-feather></span>
+                            </div>
+                        </div>
+                        <div class="dropdown-menu search-dropdown" aria-labelledby="dropdownMenuClickable">
+                            <div class="search-info">
+                                <h6><span><vue-feather type="search" class="feather-16"></vue-feather></span>Recent Searches
+                                </h6>
+                                <ul class="search-tags">
+                                    <li><a href="javascript:void(0);">Products</a></li>
+                                    <li><a href="javascript:void(0);">Sales</a></li>
+                                    <li><a href="javascript:void(0);">Applications</a></li>
+                                </ul>
+                            </div>
+                            <div class="search-info">
+                                <h6><span><vue-feather type="help-circle" class="feather-16"></vue-feather></span>Help</h6>
+                                <p>How to Change Product Volume from 0 to 200 on Inventory management</p>
+                                <p>Change Product Name</p>
+                            </div>
+                            <div class="search-info">
+                                <h6><span><vue-feather type="user" class="feather-16"></vue-feather></span>Customers</h6>
+                                <ul class="customers">
+                                    <li>
+                                        <a href="javascript:void(0);">Aron Varu<img src="Assets/img/avator1.jpg"
+                                                alt="" class="img-fluid"></a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);">Jonita<img src="Assets/img/avatar-01.jpg"
+                                                alt="" class="img-fluid"></a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:void(0);">Aaron<img src="Assets/img/avatar-10.jpg"
+                                                alt="" class="img-fluid"></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </li>
+            <!-- /Search -->
+
+
+            <!-- Select Store -->
+            <li class="nav-item dropdown has-arrow main-drop select-store-dropdown">
+                <a href="javascript:void(0);" class="dropdown-toggle nav-link select-store" data-bs-toggle="dropdown">
+                    <span class="user-info">
+                        <span class="user-letter">
+                            <img src="Assets/img/store-01.png" alt="Store Logo" class="img-fluid">
+                        </span>
+                        <span class="user-detail">
+                            <span class="user-name">Select Store</span>
+                        </span>
+                    </span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <img src="Assets/img/store-01.png" alt="Store Logo" class="img-fluid"> Grocery Alpha
+                    </a>
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <img src="Assets/img/store-02.png" alt="Store Logo" class="img-fluid"> Grocery Apex
+                    </a>
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <img src="Assets/img/store-03.png" alt="Store Logo" class="img-fluid"> Grocery Bevy
+                    </a>
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <img src="Assets/img/store-04.png" alt="Store Logo" class="img-fluid"> Grocery Eden
+                    </a>
+                </div>
+            </li>
+            <!-- /Select Store -->
+
+            <!-- Flag -->
+            <li class="nav-item dropdown has-arrow flag-nav nav-item-box">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
+                    <img src="Assets/img/us.png" alt="Language" class="img-fluid">
+                </a>
+                <div class="dropdown-menu dropdown-menu-right">
+                    <a href="javascript:void(0);" class="dropdown-item active">
+                        <img src="Assets/img/us.png" alt="" height="16"> English
+                    </a>
+                    <a href="javascript:void(0);" class="dropdown-item">
+                        <img src="Assets/img/fr.png" alt="" height="16"> French
+                    </a>
+                </div>
+            </li>
+            <!-- /Flag -->
+
+            <li class="nav-item nav-item-box">
+                <a href="javascript:void(0);" id="btnFullscreen" @click="initFullScreen">
+                    <vue-feather type="maximize"></vue-feather>
+                </a>
+            </li>
+            <li class="nav-item dropdown has-arrow main-drop">
+                <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
+                    <span class="user-info">
+                        <span class="user-letter">
+                            <img src="Assets/img/avator1.jpg" alt="" class="img-fluid">
+                        </span>
+                        <span class="user-detail">
+                            <span class="user-name">John Smilga</span>
+                            <span class="user-role">Super Admin</span>
+                        </span>
+                    </span>
+                </a>
+                <div class="dropdown-menu menu-drop-user">
+                    <div class="profilename">
+                        <div class="profileset">
+                            <span class="user-img"><img src="Assets/img/avator1.jpg" alt="">
+                                <span class="status online"></span></span>
+                            <div class="profilesets">
+                                <h6>John Smilga</h6>
+                                <h5>Super Admin</h5>
+                            </div>
+                        </div>
+                        <hr class="m-0">
+                        <router-link class="dropdown-item" to="/pages/profile"> <vue-feather class="me-2"
+                                type="user"></vue-feather> My
+                            Profile</router-link>
+                        <router-link class="dropdown-item" to="/settings/general-settings"><vue-feather class="me-2"
+                                type="settings"></vue-feather>Settings</router-link>
+                        <hr class="m-0">
+                        <router-link class="dropdown-item logout pb-0" to="/"><img src="Assets/icons/log-out.svg"
+                                class="me-2" alt="img">Logout</router-link>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <!-- /Header Menu -->
+
+        <!-- Mobile Menu -->
+        <div class="dropdown mobile-user-menu">
+            <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <router-link class="dropdown-item" to="/pages/profile">My Profile</router-link>
+                <router-link class="dropdown-item" to="/settings/general-settings">Settings</router-link>
+                <router-link class="dropdown-item" to="/">Logout</router-link>
+            </div>
+        </div>
+        <!-- /Mobile Menu -->
     </div>
+    <!-- /Header -->
+
+    <side-settings></side-settings>
 </template>
+
+<script>
+export default {
+    data() {
+        return {};
+    },
+    mounted() {
+        this.initMouseoverListener();
+    },
+    methods: {
+        toggleSidebar1() {
+            const body = document.body;
+            body.classList.toggle("slide-nav");
+        },
+        toggleSidebar() {
+            const body = document.body;
+            body.classList.toggle("mini-sidebar");
+        },
+        initFullScreen() {
+            document.body.classList.toggle("fullscreen-enable");
+            if (
+                !document.fullscreenElement &&
+                /* alternative standard method */
+                !document.mozFullScreenElement &&
+                !document.webkitFullscreenElement
+            ) {
+                // current working methods
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) {
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) {
+                    document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                }
+            } else {
+                if (document.cancelFullScreen) {
+                    document.cancelFullScreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitCancelFullScreen) {
+                    document.webkitCancelFullScreen();
+                }
+            }
+        },
+
+        initMouseoverListener() {
+            document.addEventListener('mouseover', this.handleMouseover);
+        },
+        handleMouseover(e) {
+            e.stopPropagation();
+
+            const body = document.body;
+            const toggleBtn = document.getElementById('toggle_btn');
+
+            if (body.classList.contains('mini-sidebar') && this.isElementVisible(toggleBtn)) {
+                const target = e.target.closest('.sidebar, .header-left');
+
+                if (target) {
+                    body.classList.add('expand-menu');
+                    this.slideDownSubmenu();
+                } else {
+                    body.classList.remove('expand-menu');
+                    this.slideUpSubmenu();
+                }
+
+                e.preventDefault();
+            }
+        },
+        isElementVisible(element) {
+            return element.offsetWidth > 0 || element.offsetHeight > 0;
+        },
+        slideDownSubmenu() {
+            const subdropPlusUl = document.getElementsByClassName('subdrop');
+            for (let i = 0; i < subdropPlusUl.length; i++) {
+                const submenu = subdropPlusUl[i].nextElementSibling;
+                if (submenu && submenu.tagName.toLowerCase() === 'ul') {
+                    submenu.style.display = 'block';
+                }
+            }
+        },
+        slideUpSubmenu() {
+            const subdropPlusUl = document.getElementsByClassName('subdrop');
+            for (let i = 0; i < subdropPlusUl.length; i++) {
+                const submenu = subdropPlusUl[i].nextElementSibling;
+                if (submenu && submenu.tagName.toLowerCase() === 'ul') {
+                    submenu.style.display = 'none';
+                }
+            }
+        },
+    },
+    beforeUnmount() {
+        document.removeEventListener('mouseover', this.handleMouseover);
+    },
+};
+</script>

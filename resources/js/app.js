@@ -7,6 +7,7 @@ import "bootstrap-vue/dist/bootstrap-vue.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
+import VueFeather from "vue-feather";
 
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
@@ -25,7 +26,7 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.vue'),
         ),
     setup({ el, App, props, plugin }) {
-        return createApp({ render: () => h(App, props) })
+        return createApp({ render: () => h(App, props) }).component(VueFeather.name, VueFeather)
             .use(plugin)
             .use(ZiggyVue)
             .use(BootstrapVue3)
