@@ -46,7 +46,8 @@
                         </div>
                         <div class="dropdown-menu search-dropdown" aria-labelledby="dropdownMenuClickable">
                             <div class="search-info">
-                                <h6><span><vue-feather type="search" class="feather-16"></vue-feather></span>Recent Searches
+                                <h6><span><vue-feather type="search" class="feather-16"></vue-feather></span>Recent
+                                    Searches
                                 </h6>
                                 <ul class="search-tags">
                                     <li><a href="javascript:void(0);">Products</a></li>
@@ -55,24 +56,26 @@
                                 </ul>
                             </div>
                             <div class="search-info">
-                                <h6><span><vue-feather type="help-circle" class="feather-16"></vue-feather></span>Help</h6>
+                                <h6><span><vue-feather type="help-circle" class="feather-16"></vue-feather></span>Help
+                                </h6>
                                 <p>How to Change Product Volume from 0 to 200 on Inventory management</p>
                                 <p>Change Product Name</p>
                             </div>
                             <div class="search-info">
-                                <h6><span><vue-feather type="user" class="feather-16"></vue-feather></span>Customers</h6>
+                                <h6><span><vue-feather type="user" class="feather-16"></vue-feather></span>Customers
+                                </h6>
                                 <ul class="customers">
                                     <li>
-                                        <a href="javascript:void(0);">Aron Varu<img src="Assets/img/avator1.jpg"
-                                                alt="" class="img-fluid"></a>
+                                        <a href="javascript:void(0);">Aron Varu<img src="Assets/img/avator1.jpg" alt=""
+                                                class="img-fluid"></a>
                                     </li>
                                     <li>
-                                        <a href="javascript:void(0);">Jonita<img src="Assets/img/avatar-01.jpg"
-                                                alt="" class="img-fluid"></a>
+                                        <a href="javascript:void(0);">Jonita<img src="Assets/img/avatar-01.jpg" alt=""
+                                                class="img-fluid"></a>
                                     </li>
                                     <li>
-                                        <a href="javascript:void(0);">Aaron<img src="Assets/img/avatar-10.jpg"
-                                                alt="" class="img-fluid"></a>
+                                        <a href="javascript:void(0);">Aaron<img src="Assets/img/avatar-10.jpg" alt=""
+                                                class="img-fluid"></a>
                                     </li>
                                 </ul>
                             </div>
@@ -140,7 +143,7 @@
                             <img src="Assets/img/avator1.jpg" alt="" class="img-fluid">
                         </span>
                         <span class="user-detail">
-                            <span class="user-name">John Smilga</span>
+                            <span class="user-name"> {{ $page.props.auth.user.name }}</span>
                             <span class="user-role">Super Admin</span>
                         </span>
                     </span>
@@ -151,14 +154,16 @@
                             <span class="user-img"><img src="Assets/img/avator1.jpg" alt="">
                                 <span class="status online"></span></span>
                             <div class="profilesets">
-                                <h6>John Smilga</h6>
+                                <h6>{{ $page.props.auth.user.name }}</h6>
                                 <h5>Super Admin</h5>
                             </div>
                         </div>
                         <hr class="m-0">
-                        <router-link class="dropdown-item" to="/pages/profile"> <vue-feather class="me-2"
+                        <Link >
+                            <span class="dropdown-item"> <vue-feather class="me-2"
                                 type="user"></vue-feather> My
-                            Profile</router-link>
+                                Profile</span>
+                            </Link>
                         <router-link class="dropdown-item" to="/settings/general-settings"><vue-feather class="me-2"
                                 type="settings"></vue-feather>Settings</router-link>
                         <hr class="m-0">
@@ -168,9 +173,7 @@
                 </div>
             </li>
         </ul>
-        <!-- /Header Menu -->
-
-        <!-- Mobile Menu -->
+      
         <div class="dropdown mobile-user-menu">
             <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
                 aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
@@ -180,104 +183,108 @@
                 <router-link class="dropdown-item" to="/">Logout</router-link>
             </div>
         </div>
-        <!-- /Mobile Menu -->
     </div>
-    <!-- /Header -->
 
     <side-settings></side-settings>
 </template>
 
-<script>
-export default {
-    data() {
-        return {};
-    },
-    mounted() {
-        this.initMouseoverListener();
-    },
-    methods: {
-        toggleSidebar1() {
-            const body = document.body;
-            body.classList.toggle("slide-nav");
-        },
-        toggleSidebar() {
-            const body = document.body;
-            body.classList.toggle("mini-sidebar");
-        },
-        initFullScreen() {
-            document.body.classList.toggle("fullscreen-enable");
-            if (
-                !document.fullscreenElement &&
-                /* alternative standard method */
-                !document.mozFullScreenElement &&
-                !document.webkitFullscreenElement
-            ) {
-                // current working methods
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
-                } else if (document.documentElement.mozRequestFullScreen) {
-                    document.documentElement.mozRequestFullScreen();
-                } else if (document.documentElement.webkitRequestFullscreen) {
-                    document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-                }
-            } else {
-                if (document.cancelFullScreen) {
-                    document.cancelFullScreen();
-                } else if (document.mozCancelFullScreen) {
-                    document.mozCancelFullScreen();
-                } else if (document.webkitCancelFullScreen) {
-                    document.webkitCancelFullScreen();
-                }
-            }
-        },
+<script setup>
+import { onMounted, onBeforeUnmount } from 'vue';
+import { Link } from '@inertiajs/vue3';
 
-        initMouseoverListener() {
-            document.addEventListener('mouseover', this.handleMouseover);
-        },
-        handleMouseover(e) {
-            e.stopPropagation();
-
-            const body = document.body;
-            const toggleBtn = document.getElementById('toggle_btn');
-
-            if (body.classList.contains('mini-sidebar') && this.isElementVisible(toggleBtn)) {
-                const target = e.target.closest('.sidebar, .header-left');
-
-                if (target) {
-                    body.classList.add('expand-menu');
-                    this.slideDownSubmenu();
-                } else {
-                    body.classList.remove('expand-menu');
-                    this.slideUpSubmenu();
-                }
-
-                e.preventDefault();
-            }
-        },
-        isElementVisible(element) {
-            return element.offsetWidth > 0 || element.offsetHeight > 0;
-        },
-        slideDownSubmenu() {
-            const subdropPlusUl = document.getElementsByClassName('subdrop');
-            for (let i = 0; i < subdropPlusUl.length; i++) {
-                const submenu = subdropPlusUl[i].nextElementSibling;
-                if (submenu && submenu.tagName.toLowerCase() === 'ul') {
-                    submenu.style.display = 'block';
-                }
-            }
-        },
-        slideUpSubmenu() {
-            const subdropPlusUl = document.getElementsByClassName('subdrop');
-            for (let i = 0; i < subdropPlusUl.length; i++) {
-                const submenu = subdropPlusUl[i].nextElementSibling;
-                if (submenu && submenu.tagName.toLowerCase() === 'ul') {
-                    submenu.style.display = 'none';
-                }
-            }
-        },
-    },
-    beforeUnmount() {
-        document.removeEventListener('mouseover', this.handleMouseover);
-    },
+const toggleSidebar1 = () => {
+    const body = document.body;
+    body.classList.toggle("slide-nav");
 };
+
+const toggleSidebar = () => {
+    const body = document.body;
+    body.classList.toggle("mini-sidebar");
+};
+
+const initFullScreen = () => {
+    document.body.classList.toggle("fullscreen-enable");
+    if (
+        !document.fullscreenElement &&
+        !document.mozFullScreenElement &&
+        !document.webkitFullscreenElement
+    ) {
+        if (document.documentElement.requestFullscreen) {
+            document.documentElement.requestFullscreen();
+        } else if (document.documentElement.mozRequestFullScreen) {
+            document.documentElement.mozRequestFullScreen();
+        } else if (document.documentElement.webkitRequestFullscreen) {
+            document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+        }
+    } else {
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+    }
+};
+
+const isElementVisible = (element) => {
+    return element.offsetWidth > 0 || element.offsetHeight > 0;
+};
+
+const slideDownSubmenu = () => {
+    const subdropPlusUl = document.getElementsByClassName('subdrop');
+    for (let i = 0; i < subdropPlusUl.length; i++) {
+        const submenu = subdropPlusUl[i].nextElementSibling;
+        if (submenu && submenu.tagName.toLowerCase() === 'ul') {
+            submenu.style.display = 'block';
+        }
+    }
+};
+
+const slideUpSubmenu = () => {
+    const subdropPlusUl = document.getElementsByClassName('subdrop');
+    for (let i = 0; i < subdropPlusUl.length; i++) {
+        const submenu = subdropPlusUl[i].nextElementSibling;
+        if (submenu && submenu.tagName.toLowerCase() === 'ul') {
+            submenu.style.display = 'none';
+        }
+    }
+};
+
+const handleMouseover = (e) => {
+    e.stopPropagation();
+
+    const body = document.body;
+    const toggleBtn = document.getElementById('toggle_btn');
+
+    if (body.classList.contains('mini-sidebar') && isElementVisible(toggleBtn)) {
+        const target = e.target.closest('.sidebar, .header-left');
+
+        if (target) {
+            body.classList.add('expand-menu');
+            slideDownSubmenu();
+        } else {
+            body.classList.remove('expand-menu');
+            slideUpSubmenu();
+        }
+
+        e.preventDefault();
+    }
+};
+
+const initMouseoverListener = () => {
+    document.addEventListener('mouseover', handleMouseover);
+};
+
+const removeMouseoverListener = () => {
+    document.removeEventListener('mouseover', handleMouseover);
+};
+
+onMounted(() => {
+    initMouseoverListener();
+});
+
+onBeforeUnmount(() => {
+    removeMouseoverListener();
+});
 </script>
