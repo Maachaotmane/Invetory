@@ -13,7 +13,7 @@
                             </router-link>
                             <div class="login-userheading">
                                 <h3>Register</h3>
-                                <h4>Create New Dreamspos Account</h4>
+                                <h4>Create New Account</h4>
                             </div>
                             <div class="form-login">
                                 <label>Name</label>

@@ -1,5 +1,4 @@
 <template>
-    <!-- Header -->
     <div class="header">
 
         <!-- Logo -->
@@ -115,7 +114,7 @@
             </li>
             <!-- /Select Store -->
 
-            <!-- Flag -->
+            <!-- Flag
             <li class="nav-item dropdown has-arrow flag-nav nav-item-box">
                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
                     <img src="Assets/img/us.png" alt="Language" class="img-fluid">
@@ -129,7 +128,7 @@
                     </a>
                 </div>
             </li>
-            <!-- /Flag -->
+            /Flag -->
 
             <li class="nav-item nav-item-box">
                 <a href="javascript:void(0);" id="btnFullscreen" @click="initFullScreen">
@@ -159,33 +158,38 @@
                             </div>
                         </div>
                         <hr class="m-0">
-                        <Link >
-                            <span class="dropdown-item"> <vue-feather class="me-2"
-                                type="user"></vue-feather> My
-                                Profile</span>
-                            </Link>
+                        <Link :href="route('profile.edit')" class="text-decoration-none">
+                        <span class="dropdown-item"> <vue-feather class="me-2" type="user"></vue-feather> My
+                            Profile</span>
+                        </Link>
                         <router-link class="dropdown-item" to="/settings/general-settings"><vue-feather class="me-2"
                                 type="settings"></vue-feather>Settings</router-link>
                         <hr class="m-0">
-                        <router-link class="dropdown-item logout pb-0" to="/"><img src="Assets/icons/log-out.svg"
-                                class="me-2" alt="img">Logout</router-link>
+                        <Link :href="route('logout')" method="post" class="text-decoration-none">
+                        <span class="dropdown-item logout pb-0" to="/"><img src="Assets/icons/log-out.svg" class="me-2"
+                                alt="img">Logout
+                        </span>
+                        </Link>
                     </div>
                 </div>
             </li>
         </ul>
-      
+
         <div class="dropdown mobile-user-menu">
             <a href="javascript:void(0);" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"
                 aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
             <div class="dropdown-menu dropdown-menu-right">
-                <router-link class="dropdown-item" to="/pages/profile">My Profile</router-link>
+                <Link :href="route('profile.edit')" class="text-decoration-none">
+                <span class="dropdown-item"> <vue-feather class="me-2" type="user"></vue-feather> My
+                    Profile</span>
+                </Link>
                 <router-link class="dropdown-item" to="/settings/general-settings">Settings</router-link>
-                <router-link class="dropdown-item" to="/">Logout</router-link>
+                <Link :href="route('logout')" method="post" class="text-decoration-none">
+                <span class="dropdown-item" to="/">Logout</span>
+                </Link>
             </div>
         </div>
     </div>
-
-    <side-settings></side-settings>
 </template>
 
 <script setup>

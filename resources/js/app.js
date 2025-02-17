@@ -8,7 +8,8 @@ import "bootstrap/dist/css/bootstrap.css";
 import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import VueFeather from "vue-feather";
-
+import Collapsed_Sidebar from "../js/Layouts/collapsed-sidebar.vue";
+import Horizontal_Sidebar from "../js/Layouts/horizontal-sidebar.vue";
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
@@ -26,7 +27,8 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.vue'),
         ),
     setup({ el, App, props, plugin }) {
-        return createApp({ render: () => h(App, props) }).component(VueFeather.name, VueFeather)
+        return createApp({ render: () => h(App, props) }).component(VueFeather.name, VueFeather).component("collapsed-sidebar", Collapsed_Sidebar)
+        .component("horizontal-sidebar", Horizontal_Sidebar)
             .use(plugin)
             .use(ZiggyVue)
             .use(BootstrapVue3)
