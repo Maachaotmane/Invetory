@@ -1,7 +1,6 @@
 <template>
     <div class="header">
 
-        <!-- Logo -->
         <div class="header-left active">
             <router-link to="/dashboard" class="logo logo-normal">
                 <img src="Assets/img/logo.png" alt="">
@@ -16,7 +15,6 @@
                 <vue-feather type="chevrons-left"></vue-feather>
             </a>
         </div>
-        <!-- /Logo -->
 
         <a id="mobile_btn" class="mobile_btn" href="javascript:void(0);" @click="toggleSidebar1">
             <span class="bar-icon">
@@ -26,10 +24,7 @@
             </span>
         </a>
 
-        <!-- Header Menu -->
         <ul class="nav user-menu">
-
-            <!-- Search -->
             <li class="nav-item nav-searchinputs">
                 <div class="top-nav-search">
                     <a href="javascript:void(0);" class="responsive-search">
@@ -43,49 +38,11 @@
                                 <span><vue-feather type="x-circle" class="feather-14"></vue-feather></span>
                             </div>
                         </div>
-                        <div class="dropdown-menu search-dropdown" aria-labelledby="dropdownMenuClickable">
-                            <div class="search-info">
-                                <h6><span><vue-feather type="search" class="feather-16"></vue-feather></span>Recent
-                                    Searches
-                                </h6>
-                                <ul class="search-tags">
-                                    <li><a href="javascript:void(0);">Products</a></li>
-                                    <li><a href="javascript:void(0);">Sales</a></li>
-                                    <li><a href="javascript:void(0);">Applications</a></li>
-                                </ul>
-                            </div>
-                            <div class="search-info">
-                                <h6><span><vue-feather type="help-circle" class="feather-16"></vue-feather></span>Help
-                                </h6>
-                                <p>How to Change Product Volume from 0 to 200 on Inventory management</p>
-                                <p>Change Product Name</p>
-                            </div>
-                            <div class="search-info">
-                                <h6><span><vue-feather type="user" class="feather-16"></vue-feather></span>Customers
-                                </h6>
-                                <ul class="customers">
-                                    <li>
-                                        <a href="javascript:void(0);">Aron Varu<img src="Assets/img/avator1.jpg" alt=""
-                                                class="img-fluid"></a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);">Jonita<img src="Assets/img/avatar-01.jpg" alt=""
-                                                class="img-fluid"></a>
-                                    </li>
-                                    <li>
-                                        <a href="javascript:void(0);">Aaron<img src="Assets/img/avatar-10.jpg" alt=""
-                                                class="img-fluid"></a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
                     </form>
                 </div>
             </li>
-            <!-- /Search -->
 
 
-            <!-- Select Store -->
             <li class="nav-item dropdown has-arrow main-drop select-store-dropdown">
                 <a href="javascript:void(0);" class="dropdown-toggle nav-link select-store" data-bs-toggle="dropdown">
                     <span class="user-info">
@@ -112,23 +69,6 @@
                     </a>
                 </div>
             </li>
-            <!-- /Select Store -->
-
-            <!-- Flag
-            <li class="nav-item dropdown has-arrow flag-nav nav-item-box">
-                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="javascript:void(0);" role="button">
-                    <img src="Assets/img/us.png" alt="Language" class="img-fluid">
-                </a>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <a href="javascript:void(0);" class="dropdown-item active">
-                        <img src="Assets/img/us.png" alt="" height="16"> English
-                    </a>
-                    <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="Assets/img/fr.png" alt="" height="16"> French
-                    </a>
-                </div>
-            </li>
-            /Flag -->
 
             <li class="nav-item nav-item-box">
                 <a href="javascript:void(0);" id="btnFullscreen" @click="initFullScreen">
@@ -144,7 +84,7 @@
                         <span class="user-detail">
                             <span class="user-name"> {{ $page.props.auth.user.name }}</span>
                             <span class="user-role">Super Admin</span>
-                        </span>
+                        </span>xxxxxxxxx
                     </span>
                 </a>
                 <div class="dropdown-menu menu-drop-user">
