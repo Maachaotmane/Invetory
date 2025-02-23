@@ -25,6 +25,8 @@
         "bootstrap-vue-3": "^0.5.1",
         "font-awesome": "^4.7.0",
         "vee-validate": "^4.15.0",
+        "vue-feather": "^2.0.0",
+        "vue3-perfect-scrollbar": "^2.0.0",
         "yup": "^1.6.1"
     }
 }
