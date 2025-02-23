@@ -18,6 +18,10 @@ return new class extends Migration {
             $table->string('email');
             $table->float('credit_limit')->nullable();
             $table->float('total_due_amount')->nullable();
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
