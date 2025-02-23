@@ -16,6 +16,11 @@ return new class extends Migration {
             $table->string('address');
             $table->string('phone');
             $table->string('email');
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
