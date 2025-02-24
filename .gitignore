@@ -21,7 +21,6 @@ bootstrap/cache/config.php
 /public/mix-manifest.json
 
 # Vite
-/vite.config.js
 /public/build
 
 # OS-specific files
