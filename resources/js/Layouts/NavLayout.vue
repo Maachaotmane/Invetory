@@ -84,7 +84,7 @@
                         <span class="user-detail">
                             <span class="user-name"> {{ $page.props.auth.user.name }}</span>
                             <span class="user-role">Super Admin</span>
-                        </span>xxxxxxxxx
+                        </span>
                     </span>
                 </a>
                 <div class="dropdown-menu menu-drop-user">
@@ -105,10 +105,8 @@
                         <router-link class="dropdown-item" to="/settings/general-settings"><vue-feather class="me-2"
                                 type="settings"></vue-feather>Settings</router-link>
                         <hr class="m-0">
-                        <Link :href="route('logout')" method="post" class="text-decoration-none">
-                        <span class="dropdown-item logout pb-0" to="/"><img src="Assets/icons/log-out.svg" class="me-2"
-                                alt="img">Logout
-                        </span>
+                        <Link :href="route('logout')" method="post" class="text-decoration-none dropdown-item logout pb-0">
+                        <img src="Assets/icons/log-out.svg" class="me-2" alt="img">Logout
                         </Link>
                     </div>
                 </div>
