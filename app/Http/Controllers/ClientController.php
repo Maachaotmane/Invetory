@@ -14,8 +14,8 @@ class ClientController extends Controller
     {
         $query = Client::query();
 
-        if ($request->has('search')) {
-            $search = $request->input('search');
+        if ($request->has('searchClient')) {
+            $search = $request->input('searchClient');
             $query->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%");
         }
@@ -45,14 +45,14 @@ class ClientController extends Controller
             'phone' => 'required|string|max:255',
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
-            'created_by' => 'required|exists:users,id',
             'credit_limit' => 'nullable|numeric',
             'total_due_amount' => 'nullable|numeric',
         ]);
 
+        $validatedData['created_by'] = auth()->user()->id;
         Client::create($validatedData);
 
-        return redirect()->route('clients.index')->with('success', 'Client created successfully.');
+        return redirect()->route('home.index');
     }
 
     /**
@@ -76,8 +76,10 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Client $client)
+    public function update(Request $request, int $id)
     {
+        $client = Client::findOrFail($id);
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:clients,email,' . $client->id,
@@ -92,7 +94,7 @@ class ClientController extends Controller
 
         $client->update($validatedData);
 
-        return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
+        return redirect()->route('home.index');
     }
 
     /**
@@ -103,6 +105,6 @@ class ClientController extends Controller
         $client = Client::findOrFail($id);
         $client->delete();
 
-        return redirect()->route('clients.index')->with('success', 'Client deleted successfully.');
+        return redirect()->route('home.index');
     }
 }

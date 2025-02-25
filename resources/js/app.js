@@ -8,6 +8,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import VueFeather from "vue-feather";
+import Vue3Autocounter from "vue3-autocounter";
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
@@ -25,7 +26,7 @@ createInertiaApp({
             import.meta.glob('./Pages/**/*.vue'),
         ),
     setup({ el, App, props, plugin }) {
-        return createApp({ render: () => h(App, props) }).component(VueFeather.name, VueFeather)
+        return createApp({ render: () => h(App, props) }).component(VueFeather.name, VueFeather).component("vue3-autocounter", Vue3Autocounter)
             .use(plugin)
             .use(ZiggyVue)
             .use(BootstrapVue3)

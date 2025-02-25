@@ -14,8 +14,8 @@ class FournisseurController extends Controller
     {
         $query = Fournisseur::query();
 
-        if ($request->has('search')) {
-            $search = $request->input('search');
+        if ($request->has('searchFournisseur')) {
+            $search = $request->input('searchFournisseur');
             $query->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%");
         }
@@ -42,15 +42,15 @@ class FournisseurController extends Controller
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
-            'email' => 'required|string|email|max:255',
-            'city' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'created_by' => 'required|integer',
+            'email' => 'required|string|email|max:255|unique:fournisseurs,email',
+            'city' => 'nullable|string|max:255',
+            'country' => 'nullable|string|max:255',
         ]);
 
+        $validatedData['created_by'] = auth()->user()->id;
         Fournisseur::create($validatedData);
 
-        return redirect()->route('fournisseurs.index')->with('success', 'Fournisseur created successfully.');
+        return redirect()->route('home.index');
     }
 
     /**
@@ -76,21 +76,23 @@ class FournisseurController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Fournisseur $fournisseur)
+    public function update(Request $request, int $id)
     {
+        $fournisseur = Fournisseur::findOrFail($id);
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
-            'email' => 'required|string|email|max:255',
-            'city' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'created_by' => 'required|integer',
+            'email' => 'required|string|email|max:255|unique:fournisseurs,email,' . $fournisseur->id,
+            'city' => 'nullable|string|max:255',
+            'country' => 'nullable|string|max:255',
+            'created_by' => 'required|integer|exists:users,id',
         ]);
 
         $fournisseur->update($validatedData);
 
-        return redirect()->route('fournisseurs.index')->with('success', 'Fournisseur updated successfully.');
+        return redirect()->route('home.index');
     }
 
     /**
@@ -101,6 +103,6 @@ class FournisseurController extends Controller
         $fournisseur = Fournisseur::findOrFail($id);
         $fournisseur->delete();
 
-        return redirect()->route('fournisseurs.index')->with('success', 'Fournisseur deleted successfully.');
+        return redirect()->route('home.index');
     }
 }
