@@ -32,9 +32,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
+    Route::put('/clients/{id}', [ClientController::class, 'update'])->name('clients.update');
+    Route::post('/fournisseurs', [FournisseurController::class, 'store'])->name('fournisseurs.store');
+    Route::put('/fournisseurs/{id}', [FournisseurController::class, 'update'])->name('fournisseurs.update');
+    Route::delete('/clients/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
+    Route::delete('/fournisseurs/{id}', [FournisseurController::class, 'destroy'])->name('fournisseurs.destroy');
+    Route::get('/fournisseurs', [FournisseurController::class, 'index'])->name('fournisseurs.index');
+    Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
 });
 
 require __DIR__ . '/auth.php';
-
-Route::resource('clients', ClientController::class)->middleware('auth');
-Route::resource('fournisseurs', FournisseurController::class)->middleware('auth');
