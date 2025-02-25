@@ -22,7 +22,7 @@ class FournisseurController extends Controller
 
         $fournisseurs = $query->paginate(10);
 
-        return view('fournisseurs.index', compact('fournisseurs'));
+        return $fournisseurs;
     }
 
     /**
