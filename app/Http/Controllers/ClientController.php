@@ -22,7 +22,7 @@ class ClientController extends Controller
 
         $clients = $query->paginate(10);
 
-        return view('clients.index', compact('clients'));
+        return $clients;
     }
 
     /**
