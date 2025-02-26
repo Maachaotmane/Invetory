@@ -16,5 +16,10 @@ class ProductController extends Controller
             'status' => session('status'),
         ]);
     }
+
+    public function create(Request $request): Response
+    {
+        return Inertia::render('Product/CreateProduct');
+    }
     
 }

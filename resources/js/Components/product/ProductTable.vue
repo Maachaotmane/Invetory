@@ -22,7 +22,6 @@
                 </div>
             </div>
 
-            <!-- Filter Section -->
             <div class="card mb-0" :style="{ display: filter ? 'block' : 'none' }" id="filter_inputs">
                 <div class="card-body pb-0">
                     <div class="row">
@@ -81,7 +80,7 @@
                         <template v-if="column.key === 'Product'">
                             <div class="productimgname">
                                 <a href="javascript:void(0);" class="product-img stock-img">
-                                    <img :src="require(`Assets/img/products/${record.Image}`)" alt="product" />
+                                    <img :src="`Assets/img/${record.Image}`" alt="product" />
                                 </a>
                                 <a href="javascript:void(0);">{{ record.Product }}</a>
                             </div>
@@ -89,7 +88,7 @@
                         <template v-else-if="column.key === 'CreatedBy'">
                             <td class="userimgname">
                                 <a href="javascript:void(0);" class="product-img me-2">
-                                    <img :src="require(`Assets/img/users/${record.UserImage}`)" alt="product" />
+                                    <img :src="`Assets/img/${record.UserImage}`" alt="product" />
                                 </a>
                                 <a href="javascript:void(0);">{{ record.CreatedBy }}</a>
                             </td>
@@ -144,11 +143,11 @@ export default {
         const data = ref([
             {
                 Product: "Red Premium Handy", SKU: "PT007", Category: "Bags", Brand: "Versace", Price: "$2024.00", Unit: "Kg", Qty: "747",
-                Image: "stock-img-01.png", UserImage: "user-08.jpg", CreatedBy: "Steven",
+                Image: "stock-img-01.png", UserImage: "user-01.jpg", CreatedBy: "Steven",
             },
             {
                 Product: "Iphone 14 Pro", SKU: "PT008", Category: "Phone", Brand: "Iphone", Price: "$1698.00", Unit: "Pc", Qty: "897",
-                Image: "stock-img-02.png", UserImage: "user-04.jpg", CreatedBy: "Gravely",
+                Image: "stock-img-02.png", UserImage: "user-01.jpg", CreatedBy: "Gravely",
             },
             {
                 Product: "Black Slim 200", SKU: "PT009", Category: "Chairs", Brand: "Bently", Price: "$6794.00", Unit: "Pc", Qty: "741",
@@ -156,7 +155,7 @@ export default {
             },
             {
                 Product: "Woodcraft Sandal", SKU: "PT010", Category: "Bags", Brand: "Woodcraft", Price: "$4547.00", Unit: "Kg", Qty: "148",
-                Image: "stock-img-04.png", UserImage: "user-10.jpg", CreatedBy: "Grillo",
+                Image: "stock-img-04.png", UserImage: "user-01.jpg", CreatedBy: "Grillo",
             },
         ]);
 
