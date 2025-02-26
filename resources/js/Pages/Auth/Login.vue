@@ -6,7 +6,7 @@
                     <form @submit.prevent="submit" class="w-50">
                         <div class="login-userset">
                             <div class="login-logo logo-normal">
-                                <img src="Assets/img/logo.png" alt="img" />
+                                <img src="Assets/img/logo2.png" alt="img" />
                             </div>
                             <p to="/dashboard" class="login-logo logo-white">
                                 <img src="Assets/img/logo-white.png" alt="" />

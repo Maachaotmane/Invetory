@@ -3,13 +3,13 @@
 
         <div class="header-left active">
             <router-link to="/dashboard" class="logo logo-normal">
-                <img src="Assets/img/logo.png" alt="">
+                <img src="Assets/img/logo2.png" alt="">
             </router-link>
             <router-link to="/dashboard" class="logo logo-white">
                 <img src="Assets/img/logo-white.png" alt="">
             </router-link>
             <router-link to="/dashboard" class="logo-small">
-                <img src="Assets/img/logo-small.png" alt="">
+                <img src="Assets/img/logo3.png" alt="">
             </router-link>
             <a id="toggle_btn" href="javascript:void(0);" @click="toggleSidebar">
                 <vue-feather type="chevrons-left"></vue-feather>

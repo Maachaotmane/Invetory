@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\FournisseurController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
@@ -40,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/fournisseurs/{id}', [FournisseurController::class, 'destroy'])->name('fournisseurs.destroy');
     Route::get('/fournisseurs', [FournisseurController::class, 'index'])->name('fournisseurs.index');
     Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
+    Route::get('/families', [FamilyController::class, 'index'])->name('families.index');
 });
 
 require __DIR__ . '/auth.php';

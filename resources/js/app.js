@@ -14,6 +14,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, h } from 'vue';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import { BootstrapVue3, BToastPlugin } from "bootstrap-vue-3";
+// import VueSelect from "vue3-select2-component";
 
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
@@ -27,6 +28,7 @@ createInertiaApp({
         ),
     setup({ el, App, props, plugin }) {
         return createApp({ render: () => h(App, props) }).component(VueFeather.name, VueFeather).component("vue3-autocounter", Vue3Autocounter)
+            // .component("vue-select", VueSelect)            
             .use(plugin)
             .use(ZiggyVue)
             .use(BootstrapVue3)
