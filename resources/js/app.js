@@ -17,7 +17,7 @@ import { BootstrapVue3, BToastPlugin } from "bootstrap-vue-3";
 // import VueSelect from "vue3-select2-component";
 
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'App';
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
