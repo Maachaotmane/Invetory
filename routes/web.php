@@ -4,6 +4,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\FournisseurController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +43,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/fournisseurs', [FournisseurController::class, 'index'])->name('fournisseurs.index');
     Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
     Route::get('/families', [FamilyController::class, 'index'])->name('families.index');
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
 });
 
 require __DIR__ . '/auth.php';

@@ -25,11 +25,8 @@
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Brand Type</label>
-                                        <vue-select
-                                            :options="Catemodal"
-                                            id="catemodal"
-                                            placeholder="Choose Brand Type"
-                                    />
+                                    <VueMultiselect v-model="selected" :multiple="true" :options="options">
+                                    </VueMultiselect>
                                 </div>
                                 <div class="d-flex justify-content-end modal-footer-btn">
                                     <button type="button" class="me-2 project-btn-cancel" data-bs-dismiss="modal">
@@ -49,7 +46,14 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
-
+import { ref } from "vue";
+import VueMultiselect from 'vue-multiselect'
+const selected = ref(null);
+const options = [
+    'Option 1',
+    'Option 2',
+    'Option 3'
+]
 
 const form = useForm({
     name: '',
@@ -79,3 +83,5 @@ const submitForm = () => {
 };
 
 </script>
+
+<style src="vue-multiselect/dist/vue-multiselect.css"></style>

@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.7.2",
+        "ant-design-vue": "^4.2.6",
         "bootstrap": "^5.3.3",
         "bootstrap-vue": "^2.23.1",
         "bootstrap-vue-3": "^0.5.1",
@@ -27,8 +28,10 @@
         "sweetalert2": "^11.17.2",
         "vee-validate": "^4.15.0",
         "vue-feather": "^2.0.0",
+        "vue-multiselect": "^3.2.0",
         "vue3-autocounter": "^1.0.8",
         "vue3-perfect-scrollbar": "^2.0.0",
+        "vue3-tags-input": "^1.0.12",
         "yup": "^1.6.1"
     }
 }

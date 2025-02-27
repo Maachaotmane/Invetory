@@ -4,7 +4,7 @@
       <ul class="mt-3 submenu-ul">
         <h4 class="submenu-hdr fs-6">Articles</h4>
         <li class="submenu-li">
-          <Link href="/" class="side-links"><i data-name="grid" data-tags="" data-type="grid"
+          <Link href="/products" class="side-links"><i data-name="grid" data-tags="" data-type="grid"
             class="vue-feather vue-feather--grid"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
               viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
               stroke-linejoin="round" class="feather feather-grid vue-feather__content">
