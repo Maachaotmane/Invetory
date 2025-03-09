@@ -1,11 +1,17 @@
 <?php
 
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\FamilyController;
 use App\Http\Controllers\FournisseurController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MeasureController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\TypeController;
+use App\Http\Controllers\UnitController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -45,6 +51,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/families', [FamilyController::class, 'index'])->name('families.index');
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+    Route::resource('categories', CategoryController::class);
+    Route::resource('sub-categories', SubCategoryController::class);
+    Route::resource('types', TypeController::class);
+    Route::resource('measures', MeasureController::class);
+    Route::resource('units', UnitController::class);
+    Route::resource('brands', BrandController::class);
+
 });
 
 require __DIR__ . '/auth.php';
