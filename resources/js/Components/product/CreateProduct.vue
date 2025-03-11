@@ -9,7 +9,7 @@
     <ul class="table-top-head">
       <li>
         <div class="page-btn">
-          <Link href="/product" class="btn btn-secondary">
+          <Link href="/product" class="project-btn bg-secondary border-secondary">
             <vue-feather type="arrow-left" class="me-2"></vue-feather>
             Back to Product
           </Link>
@@ -91,7 +91,7 @@
                         class="form-control list"
                         placeholder="Enter SKU"
                       />
-                      <button type="submit" class="btn btn-primaryadd">
+                      <button type="submit" class="btn-primaryadd">
                         Generate Code
                       </button>
                     </div>
@@ -230,7 +230,7 @@
                         class="form-control list"
                         placeholder="Please Enter Item Code"
                       />
-                      <button type="submit" class="btn btn-primaryadd">
+                      <button type="submit" class="btn-primaryadd">
                         Generate Code
                       </button>
                     </div>
@@ -833,9 +833,9 @@
       </div>
     </div>
     <div class="col-lg-12">
-      <div class="btn-addproduct mb-4">
-        <button type="button" class="btn btn-cancel me-2">Cancel</button>
-        <button type="submit" clainkss="btn btn-submit">Save Product</button>
+      <div class="btn-addproduct mb-4 d-flex">
+        <button type="button" class="btn-cancel rounded me-2">Cancel</button>
+        <button type="submit" class="project-btn">Save Product</button>
       </div>
     </div>
   </form>
