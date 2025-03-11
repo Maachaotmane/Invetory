@@ -3,13 +3,13 @@
 
         <div class="header-left active">
             <router-link to="/dashboard" class="logo logo-normal">
-                <img src="Assets/img/logo2.png" alt="">
+                <img src="/Assets/img/logo2.png" alt="">
             </router-link>
             <router-link to="/dashboard" class="logo logo-white">
-                <img src="Assets/img/logo-white.png" alt="">
+                <img src="/Assets/img/logo-white.png" alt="">
             </router-link>
             <router-link to="/dashboard" class="logo-small">
-                <img src="Assets/img/logo3.png" alt="">
+                <img src="/Assets/img/logo3.png" alt="">
             </router-link>
             <a id="toggle_btn" href="javascript:void(0);" @click="toggleSidebar">
                 <vue-feather type="chevrons-left"></vue-feather>
@@ -47,7 +47,7 @@
                 <a href="javascript:void(0);" class="dropdown-toggle nav-link select-store" data-bs-toggle="dropdown">
                     <span class="user-info">
                         <span class="user-letter">
-                            <img src="Assets/img/store-01.png" alt="Store Logo" class="img-fluid">
+                            <img src="/Assets/img/store-01.png" alt="Store Logo" class="img-fluid">
                         </span>
                         <span class="user-detail">
                             <span class="user-name">Select Store</span>
@@ -56,16 +56,16 @@
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="Assets/img/store-01.png" alt="Store Logo" class="img-fluid"> Grocery Alpha
+                        <img src="/Assets/img/store-01.png" alt="Store Logo" class="img-fluid"> Grocery Alpha
                     </a>
                     <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="Assets/img/store-02.png" alt="Store Logo" class="img-fluid"> Grocery Apex
+                        <img src="/Assets/img/store-02.png" alt="Store Logo" class="img-fluid"> Grocery Apex
                     </a>
                     <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="Assets/img/store-03.png" alt="Store Logo" class="img-fluid"> Grocery Bevy
+                        <img src="/Assets/img/store-03.png" alt="Store Logo" class="img-fluid"> Grocery Bevy
                     </a>
                     <a href="javascript:void(0);" class="dropdown-item">
-                        <img src="Assets/img/store-04.png" alt="Store Logo" class="img-fluid"> Grocery Eden
+                        <img src="/Assets/img/store-04.png" alt="Store Logo" class="img-fluid"> Grocery Eden
                     </a>
                 </div>
             </li>
@@ -79,7 +79,7 @@
                 <a href="javascript:void(0);" class="dropdown-toggle nav-link userset" data-bs-toggle="dropdown">
                     <span class="user-info">
                         <span class="user-letter">
-                            <img src="Assets/img/avator1.jpg" alt="" class="img-fluid">
+                            <img src="/Assets/img/avator1.jpg" alt="" class="img-fluid">
                         </span>
                         <span class="user-detail">
                             <span class="user-name"> {{ $page.props.auth.user.name }}</span>
@@ -90,7 +90,7 @@
                 <div class="dropdown-menu menu-drop-user">
                     <div class="profilename">
                         <div class="profileset">
-                            <span class="user-img"><img src="Assets/img/avator1.jpg" alt="">
+                            <span class="user-img"><img src="/Assets/img/avator1.jpg" alt="">
                                 <span class="status online"></span></span>
                             <div class="profilesets">
                                 <h6>{{ $page.props.auth.user.name }}</h6>
@@ -106,7 +106,7 @@
                                 type="settings"></vue-feather>Settings</router-link>
                         <hr class="m-0">
                         <Link :href="route('logout')" method="post" class="text-decoration-none dropdown-item logout pb-0">
-                        <img src="Assets/icons/log-out.svg" class="me-2" alt="img">Logout
+                        <img src="/Assets/icons/log-out.svg" class="me-2" alt="img">Logout
                         </Link>
                     </div>
                 </div>

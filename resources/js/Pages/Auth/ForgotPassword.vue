@@ -6,10 +6,10 @@
                     <form @submit.prevent="submit" class="w-50">
                         <div class="login-userset">
                             <div class="login-logo logo-normal">
-                                <img src="Assets/img/logo2.png" alt="img" />
+                                <img src="/Assets/img/logo2.png" alt="img" />
                             </div>
                             <router-link to="/dashboard" class="login-logo logo-white">
-                                <img src="Assets/img/logo-white.png" alt="" />
+                                <img src="/Assets/img/logo-white.png" alt="" />
                             </router-link>
                             <div class="login-userheading">
                                 <h3>Forgot password?</h3>
@@ -27,7 +27,7 @@
                                     <input id="email" type="email" class="form-control"
                                         :class="{ 'is-invalid': form.errors.email }" v-model="form.email" required
                                         autofocus autocomplete="username" />
-                                    <img src="Assets/icons/mail.svg" alt="img" />
+                                    <img src="/Assets/icons/mail.svg" alt="img" />
                                     <div class="invalid-feedback">{{ form.errors.email }}</div>
                                 </div>
                             </div>
@@ -48,7 +48,7 @@
                     </form>
                 </div>
                 <div class="login-img">
-                    <img src="Assets/img/forgot-02.png" alt="img" />
+                    <img src="/Assets/img/forgot-02.png" alt="img" />
                 </div>
             </div>
         </div>

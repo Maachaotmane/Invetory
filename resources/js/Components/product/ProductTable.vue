@@ -13,7 +13,7 @@
                 <div class="search-path">
                     <a class="btn btn-filter" id="filter_search" @click="toggleFilter" :class="{ setclose: filter }">
                         <vue-feather type="filter" class="filter-icon"></vue-feather>
-                        <span><img src="Assets/img/icons/closes.svg" alt="img" /></span>
+                        <span><img src="/Assets/img/icons/closes.svg" alt="img" /></span>
                     </a>
                 </div>
                 <div class="form-sort">
@@ -80,7 +80,7 @@
                         <template v-if="column.key === 'Product'">
                             <div class="productimgname">
                                 <a href="javascript:void(0);" class="product-img stock-img">
-                                    <img :src="`Assets/img/${record.Image}`" alt="product" />
+                                    <img :src="`/Assets/img/${record.Image}`" alt="product" />
                                 </a>
                                 <a href="javascript:void(0);">{{ record.Product }}</a>
                             </div>
@@ -88,7 +88,7 @@
                         <template v-else-if="column.key === 'CreatedBy'">
                             <td class="userimgname">
                                 <a href="javascript:void(0);" class="product-img me-2">
-                                    <img :src="`Assets/img/${record.UserImage}`" alt="product" />
+                                    <img :src="`/Assets/img/${record.UserImage}`" alt="product" />
                                 </a>
                                 <a href="javascript:void(0);">{{ record.CreatedBy }}</a>
                             </td>

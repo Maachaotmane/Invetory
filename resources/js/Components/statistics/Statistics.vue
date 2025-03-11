@@ -3,7 +3,7 @@
         <div class="col-xl-3 col-sm-6 col-12 d-flex">
             <div class="dash-widget w-100">
                 <div class="dash-widgetimg">
-                    <span><img src="Assets/icons/dash1.svg" alt="img" /></span>
+                    <span><img src="/Assets/icons/dash1.svg" alt="img" /></span>
                 </div>
                 <div class="dash-widgetcontent">
                     <h5>
@@ -18,7 +18,7 @@
         <div class="col-xl-3 col-sm-6 col-12 d-flex">
             <div class="dash-widget dash1 w-100">
                 <div class="dash-widgetimg">
-                    <span><img src="Assets/icons/dash2.svg" alt="img" /></span>
+                    <span><img src="/Assets/icons/dash2.svg" alt="img" /></span>
                 </div>
                 <div class="dash-widgetcontent">
                     <h5>
@@ -33,7 +33,7 @@
         <div class="col-xl-3 col-sm-6 col-12 d-flex">
             <div class="dash-widget dash2 w-100">
                 <div class="dash-widgetimg">
-                    <span><img src="Assets/icons/dash3.svg" alt="img" /></span>
+                    <span><img src="/Assets/icons/dash3.svg" alt="img" /></span>
                 </div>
                 <div class="dash-widgetcontent">
                     <h5>
@@ -48,7 +48,7 @@
         <div class="col-xl-3 col-sm-6 col-12 d-flex">
             <div class="dash-widget dash3 w-100">
                 <div class="dash-widgetimg">
-                    <span><img src="Assets/icons/dash4.svg" alt="img" /></span>
+                    <span><img src="/Assets/icons/dash4.svg" alt="img" /></span>
                 </div>
                 <div class="dash-widgetcontent">
                     <h5>
@@ -89,7 +89,7 @@
                     <h5>Purchase Invoice</h5>
                 </div>
                 <div class="dash-imgs">
-                    <img src="Assets/icons/file-text-icon-01.svg" class="img-fluid" alt="icon" />
+                    <img src="/Assets/icons/file-text-icon-01.svg" class="img-fluid" alt="icon" />
                 </div>
             </div>
         </div>

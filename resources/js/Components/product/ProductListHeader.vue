@@ -8,11 +8,11 @@
         </div>
         <ul class="table-top-head">
             <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="Pdf"><img src="Assets/icons/pdf.svg"
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="Pdf"><img src="/Assets/icons/pdf.svg"
                         alt="img" /></a>
             </li>
             <li>
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="Excel"><img src="Assets/icons/excel.svg"
+                <a data-bs-toggle="tooltip" data-bs-placement="top" title="Excel"><img src="/Assets/icons/excel.svg"
                         alt="img" /></a>
             </li>
             <li>
