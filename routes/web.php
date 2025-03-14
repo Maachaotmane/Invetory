@@ -57,7 +57,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('measures', MeasureController::class);
     Route::resource('units', UnitController::class);
     Route::resource('brands', BrandController::class);
-
+    Route::get('/categories/{category}/related', [CategoryController::class, 'getRelatedData']);
 });
 
 require __DIR__ . '/auth.php';
