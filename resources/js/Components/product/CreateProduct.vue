@@ -31,7 +31,7 @@ const loading = ref(false);
 const error = ref("");
 const images = ref([]);
 const variants = ["type", "measure", "unit", "brand"];
-
+const selectedPricing = ref("single");
 const selectedVariant = ref("");
 const rows = ref([]);
 
@@ -430,8 +430,8 @@ const submitForm = () => {
             </div>
             <div>
               <div class="accordion-body">
-                <div class="input-blocks add-products">
-                  <label class="d-block">Product Type</label>
+                <div class="add-products">
+                  <label class="form-label">Product Type</label>
                   <div class="single-pill-product">
                     <ul class="nav nav-pills" id="pills-tab1" role="tablist">
                       <li class="nav-item" role="presentation">
@@ -447,7 +447,9 @@ const submitForm = () => {
                           <input
                             type="radio"
                             class="form-control"
-                            name="payment"
+                            name="pricing_stock"
+                            value="single"
+                            v-model="selectedPricing"
                           />
                           <span class="checkmark"></span> Single Product</span
                         >
@@ -465,42 +467,180 @@ const submitForm = () => {
                           <input
                             type="radio"
                             class="form-control"
-                            name="sign"
+                            name="pricing_stock"
+                            value="variant"
+                            v-model="selectedPricing"
                           />
                           <span class="checkmark"></span> Variable Product</span
                         >
                       </li>
                     </ul>
                   </div>
-                </div>
-                <div class="tab-content" id="pills-tabContent">
-                  <div>
-                    <div class="row">
-                      <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="mb-3 add-product">
-                          <label class="form-label">Quantity</label>
-                          <input type="number" class="form-control" />
-                        </div>
+
+                  <div class="row mt-3" v-show="selectedPricing === 'single'">
+                    <div class="col-lg-4 col-sm-6 col-12">
+                      <div class="mb-3 add-product">
+                        <label class="form-label">Quantity</label>
+                        <input type="number" class="form-control" />
                       </div>
-                      <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="mb-3 add-product">
-                          <label class="form-label">Quantity Alert</label>
-                          <input type="number" class="form-control" />
-                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                      <div class="mb-3 add-product">
+                        <label class="form-label">Quantity Alert</label>
+                        <input type="number" class="form-control" />
                       </div>
-                      <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="mb-3 add-product">
-                          <label class="form-label">Buying Price</label>
-                          <input type="number" class="form-control" />
-                        </div>
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                      <div class="mb-3 add-product">
+                        <label class="form-label">Buying Price</label>
+                        <input type="number" class="form-control" />
                       </div>
-                      <div class="col-lg-4 col-sm-6 col-12">
+                    </div>
+                    <div class="col-lg-4 col-sm-6 col-12">
+                      <div class="mb-3 add-product">
+                        <label class="form-label">Price</label>
+                        <input type="number" class="form-control" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-3" v-show="selectedPricing === 'variant'">
+                    <div class="row select-color-add">
+                      <div class="col-lg-6 col-sm-6 col-12">
                         <div class="mb-3 add-product">
-                          <label class="form-label">Price</label>
-                          <input type="number" class="form-control" />
+                          <label class="form-label">Variant Attribute</label>
+                          <div class="row">
+                            <div class="col-lg-10 col-sm-10 col-10">
+                              <VueMultiselect
+                                v-model="selectedVariant"
+                                :options="variants"
+                                placeholder="Choose Variant"
+                              />
+                            </div>
+                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
+                              <div class="add-icon tab">
+                                <a class="btn btn-filter" @click="addRow">+</a>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
+                    <div
+                      class="modal-body-table table-responsive custom-modal-body"
+                    >
+                      <div class="table-responsive rounded">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                              <th>Variation</th>
+                              <th>Price</th>
+                              <th>Buying Price</th>
+                              <th>Quantity</th>
+                              <th>Quantity Alert</th>
+                              <th class="no-sort">Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr v-for="(row, index) in rows" :key="index">
+                              <td>
+                                <div class="add-product">
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    v-model="row.variation"
+                                    readonly
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div class="add-product">
+                                  <input
+                                    type="number"
+                                    class="form-control"
+                                    v-model="row.price"
+                                    placeholder="Enter Price"
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div class="add-product">
+                                  <input
+                                    type="number"
+                                    class="form-control"
+                                    v-model="row.buyingPrice"
+                                    placeholder="Enter Buying Price"
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div class="product-quantity">
+                                  <a
+                                    class="fw-bold fs-5 text-decoration-none"
+                                    href="javascript:void(0)"
+                                    @click="decrementQuantity(row)"
+                                  >
+                                    -
+                                  </a>
+                                  <input
+                                    type="number"
+                                    class="quntity-input"
+                                    v-model="row.quantity"
+                                  />
+                                  <a
+                                    class="fw-bold fs-5 text-decoration-none"
+                                    href="javascript:void(0)"
+                                    @click="incrementQuantity(row)"
+                                  >
+                                    +
+                                  </a>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="product-quantity">
+                                  <a
+                                    class="fw-bold fs-5 text-decoration-none"
+                                    href="javascript:void(0)"
+                                    @click="decrementAlert(row)"
+                                  >
+                                   -
+                                  </a>
+                                  <input
+                                    type="number"
+                                    class="quntity-input"
+                                    v-model="row.quantityAlert"
+                                  />
+                                  <a
+                                    class="fw-bold fs-5 text-decoration-none"
+                                    href="javascript:void(0)"
+                                    @click="incrementAlert(row)"
+                                  >
+                                   +
+                                  </a>
+                                </div>
+                              </td>
+                              <td class="action-table-data">
+                                <div class="edit-delete-action">
+                                  <a
+                                    class="confirm-text p-2"
+                                    @click="deleteRow(index)"
+                                    href="javascript:void(0);"
+                                  >
+                                  <VueFeather type="trash-2" class="feather-trash-2" />
+                                  </a>
+                                </div>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  
+                </div>
+                <div class="tab-content" id="pills-tabContent">
+                  <div>
+
                     <div
                       class="accordion-card-one accordion"
                       id="accordionExample3"
@@ -580,146 +720,7 @@ const submitForm = () => {
                       </div>
                     </div>
                   </div>
-                  <div>
-                    <div class="row select-color-add">
-                      <div class="col-lg-6 col-sm-6 col-12">
-                        <div class="mb-3 add-product">
-                          <label class="form-label">Variant Attribute</label>
-                          <div class="row">
-                            <div class="col-lg-10 col-sm-10 col-10">
-                              <VueMultiselect
-                                v-model="selectedVariant"
-                                :options="variants"
-                                placeholder="Choose Variant"
-                              />
-                            </div>
-                            <div class="col-lg-2 col-sm-2 col-2 ps-0">
-                              <div class="add-icon tab">
-                                <a class="btn btn-filter" @click="addRow">+</a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div
-                      class="modal-body-table table-responsive custom-modal-body"
-                    >
-                      <div class="table-responsive">
-                        <table class="table">
-                          <thead>
-                            <tr>
-                              <th>Variation</th>
-                              <th>Price</th>
-                              <th>Buying Price</th>
-                              <th>Quantity</th>
-                              <th>Quantity Alert</th>
-                              <th class="no-sort">Action</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr v-for="(row, index) in rows" :key="index">
-                              <td>
-                                <div class="add-product">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    v-model="row.variation"
-                                    readonly
-                                  />
-                                </div>
-                              </td>
-                              <td>
-                                <div class="add-product">
-                                  <input
-                                    type="number"
-                                    class="form-control"
-                                    v-model="row.price"
-                                    placeholder="Enter Price"
-                                  />
-                                </div>
-                              </td>
-                              <td>
-                                <div class="add-product">
-                                  <input
-                                    type="number"
-                                    class="form-control"
-                                    v-model="row.buyingPrice"
-                                    placeholder="Enter Buying Price"
-                                  />
-                                </div>
-                              </td>
-                              <td>
-                                <div class="product-quantity">
-                                  <span
-                                    class="quantity-btn"
-                                    @click="decrementQuantity(row)"
-                                  >
-                                    <i
-                                      data-feather="minus-circle"
-                                      class="feather-search"
-                                    ></i>
-                                  </span>
-                                  <input
-                                    type="number"
-                                    class="quntity-input"
-                                    v-model="row.quantity"
-                                  />
-                                  <span
-                                    class="quantity-btn"
-                                    @click="incrementQuantity(row)"
-                                  >
-                                    <i
-                                      data-feather="plus-circle"
-                                      class="plus-circle"
-                                    ></i>
-                                  </span>
-                                </div>
-                              </td>
-                              <td>
-                                <div class="product-quantity">
-                                  <span
-                                    class="quantity-btn"
-                                    @click="decrementAlert(row)"
-                                  >
-                                    <i
-                                      data-feather="minus-circle"
-                                      class="feather-search"
-                                    ></i>
-                                  </span>
-                                  <input
-                                    type="number"
-                                    class="quntity-input"
-                                    v-model="row.quantityAlert"
-                                  />
-                                  <span
-                                    class="quantity-btn"
-                                    @click="incrementAlert(row)"
-                                  >
-                                    <i
-                                      data-feather="plus-circle"
-                                      class="plus-circle"
-                                    ></i>
-                                  </span>
-                                </div>
-                              </td>
-                              <td class="action-table-data">
-                                <div class="edit-delete-action">
-                                  <a
-                                    class="confirm-text p-2"
-                                    @click="deleteRow(index)"
-                                    href="javascript:void(0);"
-                                  >
-                                  <VueFeather type="trash-2" class="feather-trash-2" />
-                                  </a>
-                                </div>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  </div>
+                
                 </div>
               </div>
             </div>
