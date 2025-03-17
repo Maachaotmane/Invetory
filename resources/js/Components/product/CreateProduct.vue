@@ -35,6 +35,10 @@ const selectedPricing = ref("single");
 const selectedVariant = ref("");
 const rows = ref([]);
 
+const changeProductPricing = (strg) => {
+  selectedPricing.value = strg;
+}
+
 const addRow = () => {
   if (!selectedVariant.value) return;
 
@@ -102,6 +106,12 @@ const generateUUID = (e) => {
 };
 
 const fetchRelatedData = async () => {
+  form.brand_id = null;
+  form.subCategory_id = null;
+  form.measure_id = null;
+  form.unit_id = null;
+  form.type_id = null;
+
   if (!form.category_id?.id) {
     units.value = [];
     brands.value = [];
@@ -132,30 +142,6 @@ const fetchRelatedData = async () => {
   }
 };
 
-const showConfirmation = () => {
-  Swal.fire({
-    title: "Are you sure?",
-    text: "You won't be able to revert this!",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Yes, delete it!",
-    confirmButtonClass: "btn btn-primary",
-    cancelButtonClass: "btn btn-danger ml-1",
-    buttonsStyling: false,
-  }).then((result) => {
-    if (result.value) {
-      Swal.fire({
-        icon: "success",
-        title: "Deleted!",
-        text: "Your file has been deleted.",
-        confirmButtonClass: "btn btn-success",
-      });
-    }
-  });
-};
-
 const submitForm = () => {
   useRouter().push("/inventory/add-product");
 };
@@ -171,7 +157,7 @@ const submitForm = () => {
     </div>
     <ul class="table-top-head">
       <li>
-        <div class="page-btn">
+        <div class="btn">
           <Link
             href="/products"
             method="get"
@@ -451,7 +437,7 @@ const submitForm = () => {
                             value="single"
                             v-model="selectedPricing"
                           />
-                          <span class="checkmark"></span> Single Product</span
+                          <span class="checkmark" @click="changeProductPricing('single')"></span> Single Product</span
                         >
                       </li>
                       <li class="nav-item" role="presentation">
@@ -471,7 +457,7 @@ const submitForm = () => {
                             value="variant"
                             v-model="selectedPricing"
                           />
-                          <span class="checkmark"></span> Variable Product</span
+                          <span class="checkmark" @click="changeProductPricing('variant')"></span> Variable Product</span
                         >
                       </li>
                     </ul>
