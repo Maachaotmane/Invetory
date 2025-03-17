@@ -1,3 +1,166 @@
+<script setup>
+import { ref, defineProps } from "vue";
+import { Link } from "@inertiajs/vue3";
+import VueMultiselect from "vue-multiselect";
+import Swal from "sweetalert2";
+import { useForm } from "@inertiajs/vue3";
+import apiClient from "@/api";
+
+const props = defineProps({
+  categories: Array,
+  fournisseurs: Array,
+});
+
+const form = useForm({
+  category_id: null,
+  fournisseur_id: null,
+  unit_id: null,
+  brand_id: null,
+  type_id: null,
+  measure_id: null,
+  subCategory_id: null,
+  reference: null,
+});
+
+const units = ref([]);
+const brands = ref([]);
+const types = ref([]);
+const measures = ref([]);
+const subCategories = ref([]);
+const loading = ref(false);
+const error = ref("");
+const images = ref([]);
+const variants = ["type", "measure", "unit", "brand"];
+
+const selectedVariant = ref("");
+const rows = ref([]);
+
+const addRow = () => {
+  if (!selectedVariant.value) return;
+
+  rows.value.push({
+    variation: selectedVariant.value,
+    price: "",
+    buyingPrice: "",
+    quantity: 0,
+    quantityAlert: 0,
+    isActive: false,
+  });
+
+  selectedVariant.value = "";
+};
+
+const deleteRow = (index) => {
+  rows.value.splice(index, 1);
+};
+
+const incrementQuantity = (row) => {
+  row.quantity++;
+};
+
+const decrementQuantity = (row) => {
+  if (row.quantity > 0) row.quantity--;
+};
+
+const incrementAlert = (row) => {
+  row.quantityAlert++;
+};
+
+const decrementAlert = (row) => {
+  if (row.quantityAlert > 0) row.quantityAlert--;
+};
+
+const handleFileUpload = (event) => {
+  const files = event.target.files;
+  if (files) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        images.value.push({ url: e.target.result, file: file });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+};
+
+const removeImage = (index) => {
+  images.value.splice(index, 1);
+};
+
+const generateUUID = (e) => {
+  e.preventDefault();
+  const timestamp = Date.now().toString(36);
+  let randomString = "";
+  for (let i = 0; i < 18; i++) {
+    randomString += timestamp.charAt(
+      Math.floor(Math.random() * timestamp.length)
+    );
+  }
+
+  form.reference = randomString.toLocaleUpperCase();
+};
+
+const fetchRelatedData = async () => {
+  if (!form.category_id?.id) {
+    units.value = [];
+    brands.value = [];
+    types.value = [];
+    measures.value = [];
+    subCategories.value = [];
+    return;
+  }
+
+  loading.value = true;
+  error.value = "";
+
+  try {
+    const response = await apiClient.get(
+      "/product/related-data/" + form.category_id.id
+    );
+
+    units.value = response.data.units;
+    brands.value = response.data.brands;
+    types.value = response.data.types;
+    measures.value = response.data.measures;
+    subCategories.value = response.data.subCategories;
+  } catch (err) {
+    error.value = "Failed to fetch data. Please try again.";
+    console.error(err);
+  } finally {
+    loading.value = false;
+  }
+};
+
+const showConfirmation = () => {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You won't be able to revert this!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!",
+    confirmButtonClass: "btn btn-primary",
+    cancelButtonClass: "btn btn-danger ml-1",
+    buttonsStyling: false,
+  }).then((result) => {
+    if (result.value) {
+      Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Your file has been deleted.",
+        confirmButtonClass: "btn btn-success",
+      });
+    }
+  });
+};
+
+const submitForm = () => {
+  useRouter().push("/inventory/add-product");
+};
+</script>
+
 <template>
   <div class="page-header">
     <div class="add-item d-flex">
@@ -9,7 +172,11 @@
     <ul class="table-top-head">
       <li>
         <div class="page-btn">
-          <Link href="/product" class="project-btn bg-secondary border-secondary">
+          <Link
+            href="/products"
+            method="get"
+            class="project-btn bg-secondary border-secondary"
+          >
             <vue-feather type="arrow-left" class="me-2"></vue-feather>
             Back to Product
           </Link>
@@ -17,7 +184,7 @@
       </li>
     </ul>
   </div>
-  <!-- /add -->
+
   <form @submit.prevent="submitForm">
     <div class="card">
       <div class="card-body add-product pb-0">
@@ -49,10 +216,12 @@
                 <div class="row">
                   <div class="col-lg-4 col-sm-6 col-12">
                     <div class="mb-3 add-product">
-                      <label class="form-label">Store</label>
+                      <label class="form-label">Fournisseur</label>
                       <VueMultiselect
-                        v-model="selected"
-                        :options="ThomasStore"
+                        v-model="form.fournisseur_id"
+                        :options="fournisseurs"
+                        label="name"
+                        track-by="id"
                         id="thomasstore"
                         placeholder="Choose"
                       />
@@ -60,17 +229,142 @@
                   </div>
                   <div class="col-lg-4 col-sm-6 col-12">
                     <div class="mb-3 add-product">
-                      <label class="form-label">Warehouse</label>
+                      <div class="add-newplus">
+                        <label class="form-label">Category</label>
+                        <a
+                          href="javascript:void(0);"
+                          data-bs-toggle="modal"
+                          data-bs-target="#add-units-category"
+                          class="text-secondary text-decoration-none"
+                          ><vue-feather
+                            type="plus-circle"
+                            class="plus-down-add"
+                          ></vue-feather
+                          ><span>Add New</span></a
+                        >
+                      </div>
                       <VueMultiselect
-                        v-model="selected"
-                        :options="WarhouseStore"
-                        id="warehousestore"
-                        placeholder="Choose"
+                        v-model="form.category_id"
+                        :options="categories"
+                        label="name"
+                        track-by="id"
+                        @update:modelValue="fetchRelatedData"
+                        placeholder="Choose category"
                       />
                     </div>
                   </div>
-                </div>
-                <div class="row">
+                  <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="mb-3 add-product">
+                      <div class="add-newplus">
+                        <label class="form-label">Brand</label>
+                        <a
+                          href="javascript:void(0);"
+                          data-bs-toggle="modal"
+                          data-bs-target="#add-units-brand"
+                          class="text-secondary text-decoration-none"
+                          ><vue-feather
+                            type="plus-circle"
+                            class="plus-down-add"
+                          ></vue-feather
+                          ><span>Add New</span></a
+                        >
+                      </div>
+                      <VueMultiselect
+                        v-model="form.brand_id"
+                        :options="brands"
+                        label="name"
+                        track-by="id"
+                        placeholder="Choose brand"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="mb-3 add-product">
+                      <div class="add-newplus">
+                        <label class="form-label">Unit</label>
+                        <a
+                          href="javascript:void(0);"
+                          data-bs-toggle="modal"
+                          data-bs-target="#add-unit"
+                          class="text-secondary text-decoration-none"
+                          ><vue-feather
+                            type="plus-circle"
+                            class="plus-down-add"
+                          ></vue-feather
+                          ><span>Add New</span></a
+                        >
+                      </div>
+                      <VueMultiselect
+                        v-model="form.unit_id"
+                        :options="units"
+                        label="name"
+                        track-by="id"
+                        placeholder="Choose unit"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="mb-3 add-product">
+                      <div class="add-newplus">
+                        <label class="form-label">Type</label>
+                        <a
+                          href="javascript:void(0);"
+                          data-bs-toggle="modal"
+                          data-bs-target="#add-unit"
+                          class="text-secondary text-decoration-none"
+                          ><vue-feather
+                            type="plus-circle"
+                            class="plus-down-add"
+                          ></vue-feather
+                          ><span>Add New</span></a
+                        >
+                      </div>
+                      <VueMultiselect
+                        v-model="form.type_id"
+                        :options="types"
+                        label="name"
+                        track-by="id"
+                        placeholder="Choose type"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="mb-3 add-product">
+                      <div class="add-newplus">
+                        <label class="form-label">Measure</label>
+                        <a
+                          href="javascript:void(0);"
+                          data-bs-toggle="modal"
+                          data-bs-target="#add-unit"
+                          class="text-secondary text-decoration-none"
+                          ><vue-feather
+                            type="plus-circle"
+                            class="plus-down-add"
+                          ></vue-feather
+                          ><span>Add New</span></a
+                        >
+                      </div>
+                      <VueMultiselect
+                        v-model="form.measure_id"
+                        :options="measures"
+                        label="name"
+                        track-by="id"
+                        placeholder="Choose measure"
+                      />
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="mb-3 add-product">
+                      <label class="form-label">Sub Category</label>
+                      <VueMultiselect
+                        v-model="form.subCategory_id"
+                        :options="subCategories"
+                        label="name"
+                        track-by="id"
+                        placeholder="Choose sub category"
+                      />
+                    </div>
+                  </div>
                   <div class="col-lg-4 col-sm-6 col-12">
                     <div class="mb-3 add-product">
                       <label class="form-label">Product Name</label>
@@ -78,165 +372,20 @@
                     </div>
                   </div>
                   <div class="col-lg-4 col-sm-6 col-12">
-                    <div class="mb-3 add-product">
-                      <label class="form-label">Slug</label>
-                      <input type="text" class="form-control" />
-                    </div>
-                  </div>
-                  <div class="col-lg-4 col-sm-6 col-12">
                     <div class="input-blocks add-product list">
-                      <label>SKU</label>
+                      <label>Reference</label>
                       <input
+                        v-model="form.reference"
                         type="text"
                         class="form-control list"
-                        placeholder="Enter SKU"
+                        placeholder="Generate a ref"
                       />
-                      <button type="submit" class="btn-primaryadd">
+                      <button class="btn-primaryadd" @click="generateUUID">
                         Generate Code
                       </button>
                     </div>
                   </div>
                 </div>
-                <div class="addservice-info">
-                  <div class="row">
-                    <div class="col-lg-4 col-sm-6 col-12">
-                      <div class="mb-3 add-product">
-                        <div class="add-newplus">
-                          <label class="form-label">Category</label>
-                          <a
-                            href="javascript:void(0);"
-                            data-bs-toggle="modal"
-                            data-bs-target="#add-units-category"
-                            class="text-secondary text-decoration-none"
-                            ><vue-feather
-                              type="plus-circle"
-                              class="plus-down-add"
-                            ></vue-feather
-                            ><span>Add New</span></a
-                          >
-                        </div>
-                        <VueMultiselect
-                          v-model="selected"
-                          :options="ChooseNew"
-                          id="choosenew"
-                          placeholder="Choose"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                      <div class="mb-3 add-product">
-                        <label class="form-label">Sub Category</label>
-                        <VueMultiselect
-                          v-model="selected"
-                          :options="SubCategory"
-                          id="subcategory"
-                          placeholder="Choose"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                      <div class="mb-3 add-product">
-                        <label class="form-label">Sub Sub Category</label>
-                        <VueMultiselect
-                          v-model="selected"
-                          :options="SubSubCategory"
-                          id="subsubcategory"
-                          placeholder="Choose"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="add-product-new">
-                  <div class="row">
-                    <div class="col-lg-4 col-sm-6 col-12">
-                      <div class="mb-3 add-product">
-                        <div class="add-newplus">
-                          <label class="form-label">Brand</label>
-                          <a
-                            href="javascript:void(0);"
-                            data-bs-toggle="modal"
-                            data-bs-target="#add-units-brand"
-                            class="text-secondary text-decoration-none"
-                            ><vue-feather
-                              type="plus-circle"
-                              class="plus-down-add"
-                            ></vue-feather
-                            ><span>Add New</span></a
-                          >
-                        </div>
-                        <VueMultiselect
-                          v-model="selected"
-                          :options="ChooseAdd"
-                          id="chooseadd"
-                          placeholder="Choose"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                      <div class="mb-3 add-product">
-                        <div class="add-newplus">
-                          <label class="form-label">Unit</label>
-                          <a
-                            href="javascript:void(0);"
-                            data-bs-toggle="modal"
-                            data-bs-target="#add-unit"
-                            class="text-secondary text-decoration-none"
-                            ><vue-feather
-                              type="plus-circle"
-                              class="plus-down-add"
-                            ></vue-feather
-                            ><span>Add New</span></a
-                          >
-                        </div>
-                        <VueMultiselect
-                          v-model="selected"
-                          :options="ChooseAddNew"
-                          id="chooseaddnew"
-                          placeholder="Choose"
-                        />
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                      <div class="mb-3 add-product">
-                        <label class="form-label">Selling Type</label>
-                        <VueMultiselect
-                          v-model="selected"
-                          :options="SellingType"
-                          id="sellingtype"
-                          placeholder="Choose"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-lg-6 col-sm-6 col-12">
-                    <div class="mb-3 add-product">
-                      <label class="form-label">Barcode Symbology</label>
-                      <VueMultiselect
-                        v-model="selected"
-                        :options="ChooseCode"
-                        id="choosecode"
-                        placeholder="Choose"
-                      />
-                    </div>
-                  </div>
-                  <div class="col-lg-6 col-sm-6 col-12">
-                    <div class="input-blocks add-product list">
-                      <label>Item Code</label>
-                      <input
-                        type="text"
-                        class="form-control list"
-                        placeholder="Please Enter Item Code"
-                      />
-                      <button type="submit" class="btn-primaryadd">
-                        Generate Code
-                      </button>
-                    </div>
-                  </div>
-                </div>
-                <!-- Editor -->
                 <div class="col-lg-12">
                   <div
                     class="input-blocks summer-description-box transfer mb-3"
@@ -330,49 +479,25 @@
                       <div class="col-lg-4 col-sm-6 col-12">
                         <div class="mb-3 add-product">
                           <label class="form-label">Quantity</label>
-                          <input type="text" class="form-control" />
+                          <input type="number" class="form-control" />
+                        </div>
+                      </div>
+                      <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="mb-3 add-product">
+                          <label class="form-label">Quantity Alert</label>
+                          <input type="number" class="form-control" />
+                        </div>
+                      </div>
+                      <div class="col-lg-4 col-sm-6 col-12">
+                        <div class="mb-3 add-product">
+                          <label class="form-label">Buying Price</label>
+                          <input type="number" class="form-control" />
                         </div>
                       </div>
                       <div class="col-lg-4 col-sm-6 col-12">
                         <div class="mb-3 add-product">
                           <label class="form-label">Price</label>
-                          <input type="text" class="form-control" />
-                        </div>
-                      </div>
-                      <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="add-product">
-                          <label class="form-label">Tax Type</label>
-                          <VueMultiselect
-                            v-model="selected"
-                            :options="ExclusiveType"
-                            id="exclusivetype"
-                            placeholder="Exclusive"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="row">
-                      <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="mb-3 add-product">
-                          <label class="form-label">Discount Type</label>
-                          <VueMultiselect
-                            v-model="selected"
-                            :options="ChooseTypeDis"
-                            id="choosetypedis"
-                            placeholder="Choose"
-                          />
-                        </div>
-                      </div>
-                      <div class="col-lg-4 col-sm-6 col-12">
-                        <div class=" add-product">
-                          <label class="form-label">Discount Value</label>
-                          <input type="text" class="form-control" />
-                        </div>
-                      </div>
-                      <div class="col-lg-4 col-sm-6 col-12">
-                        <div class="input-blocks add-product">
-                          <label class="form-label">Quantity Alert</label>
-                          <input type="text" class="form-control" />
+                          <input type="number" class="form-control" />
                         </div>
                       </div>
                     </div>
@@ -412,7 +537,11 @@
                                 <div class="add-choosen">
                                   <div class="input-blocks">
                                     <div class="image-upload">
-                                      <input type="file" />
+                                      <input
+                                        type="file"
+                                        multiple
+                                        @change="handleFileUpload"
+                                      />
                                       <div class="image-uploads">
                                         <i
                                           data-feather="plus-circle"
@@ -423,33 +552,25 @@
                                     </div>
                                   </div>
 
-                                  <div class="phone-img" v-if="isVisible">
+                                  <div
+                                    class="phone-img"
+                                    v-for="(image, index) in images"
+                                    :key="index"
+                                  >
                                     <img
-                                      src="/Assets/img/wood1.jpeg"
+                                      :src="image.url"
                                       alt="image"
+                                      class="object-fit-cover border h-100 w-100"
                                     />
                                     <a
                                       href="javascript:void(0);"
-                                      @click="hideProduct"
-                                      ><vue-feather
+                                      @click="removeImage(index)"
+                                    >
+                                      <vue-feather
                                         type="x"
                                         class="x-square-add remove-product"
-                                      ></vue-feather
-                                    ></a>
-                                  </div>
-                                  <div class="phone-img" v-if="isVisible1">
-                                    <img
-                                      src="/Assets/img/wood2.png"
-                                      alt="image"
-                                    />
-                                    <a
-                                      href="javascript:void(0);"
-                                      @click="hideProduct1"
-                                      ><vue-feather
-                                        type="x"
-                                        class="x-square-add remove-product"
-                                      ></vue-feather
-                                    ></a>
+                                      ></vue-feather>
+                                    </a>
                                   </div>
                                 </div>
                               </div>
@@ -467,361 +588,135 @@
                           <div class="row">
                             <div class="col-lg-10 col-sm-10 col-10">
                               <VueMultiselect
-                                v-model="selected"
-                                :options="VariantChoose"
-                                id="varianchoose"
-                                placeholder="Choose"
+                                v-model="selectedVariant"
+                                :options="variants"
+                                placeholder="Choose Variant"
                               />
                             </div>
                             <div class="col-lg-2 col-sm-2 col-2 ps-0">
                               <div class="add-icon tab">
-                                <a
-                                  class="btn btn-filter"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#add-units"
-                                  ><i class="feather feather-plus-circle"></i
-                                ></a>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="selected-hide-color" id="input-show">
-                          <div class="row align-items-center">
-                            <div class="col-sm-10">
-                              <div class="input-blocks">
-                                <vue3-tags-input
-                                  class="input-tags form-control"
-                                  type="text"
-                                  data-role="tagsinput"
-                                  name="inputBox"
-                                  id="inputBox"
-                                  :tags="tags"
-                                />
-                              </div>
-                            </div>
-                            <div class="col-lg-2">
-                              <div class="input-blocks">
-                                <a
-                                  href="javascript:void(0);"
-                                  class="remove-color"
-                                  ><i class="far fa-trash-alt"></i
-                                ></a>
+                                <a class="btn btn-filter" @click="addRow">+</a>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-
                     <div
-                      class="modal-body-table variant-table"
-                      id="variant-table"
+                      class="modal-body-table table-responsive custom-modal-body"
                     >
                       <div class="table-responsive">
                         <table class="table">
                           <thead>
                             <tr>
-                              <th>Variantion</th>
-                              <th>Variant Value</th>
-                              <th>SKU</th>
-                              <th>Quantity</th>
+                              <th>Variation</th>
                               <th>Price</th>
+                              <th>Buying Price</th>
+                              <th>Quantity</th>
+                              <th>Quantity Alert</th>
                               <th class="no-sort">Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            <tr>
+                            <tr v-for="(row, index) in rows" :key="index">
                               <td>
                                 <div class="add-product">
                                   <input
                                     type="text"
                                     class="form-control"
-                                    value="color"
+                                    v-model="row.variation"
+                                    readonly
                                   />
                                 </div>
                               </td>
                               <td>
                                 <div class="add-product">
                                   <input
-                                    type="text"
+                                    type="number"
                                     class="form-control"
-                                    value="red"
+                                    v-model="row.price"
+                                    placeholder="Enter Price"
                                   />
                                 </div>
                               </td>
                               <td>
                                 <div class="add-product">
                                   <input
-                                    type="text"
+                                    type="number"
                                     class="form-control"
-                                    value="1234"
+                                    v-model="row.buyingPrice"
+                                    placeholder="Enter Buying Price"
                                   />
                                 </div>
                               </td>
                               <td>
                                 <div class="product-quantity">
-                                  <span class="quantity-btn"
-                                    ><i
+                                  <span
+                                    class="quantity-btn"
+                                    @click="decrementQuantity(row)"
+                                  >
+                                    <i
                                       data-feather="minus-circle"
                                       class="feather-search"
-                                    ></i
-                                  ></span>
+                                    ></i>
+                                  </span>
                                   <input
-                                    type="text"
+                                    type="number"
                                     class="quntity-input"
-                                    value="2"
+                                    v-model="row.quantity"
                                   />
-                                  <span class="quantity-btn"
-                                    >+<i
+                                  <span
+                                    class="quantity-btn"
+                                    @click="incrementQuantity(row)"
+                                  >
+                                    <i
                                       data-feather="plus-circle"
                                       class="plus-circle"
-                                    ></i
-                                  ></span>
-                                </div>
-                              </td>
-                              <td>
-                                <div class="add-product">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    value="50000"
-                                  />
-                                </div>
-                              </td>
-                              <td class="action-table-data">
-                                <div class="edit-delete-action">
-                                  <div class="input-block add-lists">
-                                    <label class="checkboxs">
-                                      <input type="checkbox" checked />
-                                      <span class="checkmarks"></span>
-                                    </label>
-                                  </div>
-                                  <a
-                                    class="me-2 p-2"
-                                    href="javascript:void(0);"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#add-variation"
-                                  >
-                                    <i
-                                      data-feather="plus"
-                                      class="feather-edit"
                                     ></i>
-                                  </a>
-                                  <a
-                                    class="confirm-text p-2"
-                                    @click="showConfirmation"
-                                    href="javascript:void(0);"
-                                  >
-                                    <i
-                                      data-feather="trash-2"
-                                      class="feather-trash-2"
-                                    ></i>
-                                  </a>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                <div class="add-product">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    value="color"
-                                  />
-                                </div>
-                              </td>
-                              <td>
-                                <div class="add-product">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    value="black"
-                                  />
-                                </div>
-                              </td>
-                              <td>
-                                <div class="add-product">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    value="2345"
-                                  />
+                                  </span>
                                 </div>
                               </td>
                               <td>
                                 <div class="product-quantity">
-                                  <span class="quantity-btn"
-                                    ><i
+                                  <span
+                                    class="quantity-btn"
+                                    @click="decrementAlert(row)"
+                                  >
+                                    <i
                                       data-feather="minus-circle"
                                       class="feather-search"
-                                    ></i
-                                  ></span>
+                                    ></i>
+                                  </span>
                                   <input
-                                    type="text"
+                                    type="number"
                                     class="quntity-input"
-                                    value="3"
+                                    v-model="row.quantityAlert"
                                   />
-                                  <span class="quantity-btn"
-                                    >+<i
+                                  <span
+                                    class="quantity-btn"
+                                    @click="incrementAlert(row)"
+                                  >
+                                    <i
                                       data-feather="plus-circle"
                                       class="plus-circle"
-                                    ></i
-                                  ></span>
-                                </div>
-                              </td>
-                              <td>
-                                <div class="add-product">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    value="50000"
-                                  />
+                                    ></i>
+                                  </span>
                                 </div>
                               </td>
                               <td class="action-table-data">
                                 <div class="edit-delete-action">
-                                  <div class="input-block add-lists">
-                                    <label class="checkboxs">
-                                      <input type="checkbox" checked />
-                                      <span class="checkmarks"></span>
-                                    </label>
-                                  </div>
-                                  <a
-                                    class="me-2 p-2"
-                                    href="javascript:void(0);"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#edit-units"
-                                  >
-                                    <i
-                                      data-feather="plus"
-                                      class="feather-edit"
-                                    ></i>
-                                  </a>
                                   <a
                                     class="confirm-text p-2"
-                                    @click="showConfirmation"
+                                    @click="deleteRow(index)"
                                     href="javascript:void(0);"
                                   >
-                                    <i
-                                      data-feather="trash-2"
-                                      class="feather-trash-2"
-                                    ></i>
+                                  <VueFeather type="trash-2" class="feather-trash-2" />
                                   </a>
                                 </div>
                               </td>
                             </tr>
                           </tbody>
                         </table>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="accordion-card-one accordion" id="accordionExample4">
-          <div class="accordion-item">
-            <div class="accordion-header" id="headingFour">
-              <div
-                class="accordion-button"
-                data-bs-toggle="collapse"
-                data-bs-target="#collapseFour"
-                aria-controls="collapseFour"
-              >
-                <div class="text-editor add-list">
-                  <div class="addproduct-icon list">
-                    <h5>
-                      <vue-feather type="list" class="add-info"></vue-feather
-                      ><span>Custom Fields</span>
-                    </h5>
-                    <a href="javascript:void(0);"
-                      ><vue-feather
-                        type="chevron-down"
-                        class="chevron-down-add"
-                      ></vue-feather
-                    ></a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="accordion-body">
-                <div class="text-editor add-list add">
-                  <div class="custom-filed">
-                    <div class="input-block add-lists">
-                      <label class="checkboxs">
-                        <input type="checkbox" />
-                        <span class="checkmarks"></span>Warranties
-                      </label>
-                      <label class="checkboxs">
-                        <input type="checkbox" />
-                        <span class="checkmarks"></span>Manufacturer
-                      </label>
-                      <label class="checkboxs">
-                        <input type="checkbox" />
-                        <span class="checkmarks"></span>Expiry
-                      </label>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-4 col-sm-6 col-12">
-                      <div class="add-product">
-                        <label class="form-label">Discount Type</label>
-                        <VueMultiselect
-                          v-model="selected"
-                          :options="Distype"
-                          id="distype"
-                          placeholder="Choose"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-lg-4 col-sm-6 col-12">
-                      <div class="input-blocks add-product">
-                        <label>Quantity Alert</label>
-                        <input type="text" class="form-control" />
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                      <div class="input-blocks">
-                        <label>Manufactured Date</label>
-
-                        <div class="input-groupicon calender-input">
-                          <vue-feather
-                            type="calendar"
-                            class="info-img"
-                          ></vue-feather>
-                          <date-picker
-                            v-model="startdate"
-                            placeholder="Choose Date"
-                            class="form-control"
-                            :editable="true"
-                            :clearable="false"
-                            :input-format="dateFormat"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
-                      <div class="input-blocks">
-                        <label>Expiry On</label>
-
-                        <div class="input-groupicon calender-input">
-                          <vue-feather
-                            type="calendar"
-                            class="info-img"
-                          ></vue-feather>
-                          <date-picker
-                            v-model="startdateOne"
-                            placeholder="Choose Date"
-                            class="form-control"
-                            :editable="true"
-                            :clearable="false"
-                            :input-format="dateFormat"
-                          />
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -840,87 +735,5 @@
     </div>
   </form>
 </template>
-
-<script>
-import { ref } from "vue";
-import { Link } from "@inertiajs/vue3";
-const currentDate = ref(new Date());
-const currentDateOne = ref(new Date());
-import VueMultiselect from "vue-multiselect";
-import Vue3TagsInput from "vue3-tags-input";
-import Swal from "sweetalert2";
-export default {
-  components: {
-    Vue3TagsInput,
-    VueMultiselect,
-  },
-  data() {
-    return {
-      isVisible: true,
-      isVisible1: true,
-      selected: null,
-      Distype: ["Choose", "Percentage", "Cash"],
-      VariantChoose: ["Choose", "Color", "Red", "Black"],
-      ChooseTypeDis: ["Choose", "Percentage", "Cash"],
-      ExclusiveType: ["Exclusive", "Sales Tax"],
-      ChooseCode: ["Choose", "Code34", "Code35", "Code36"],
-      SellingType: ["Choose", "Transactional selling", "Solution selling"],
-      ChooseAddNew: ["Choose", "Kg", "Pc"],
-      ChooseAdd: ["Choose", "Nike", "Bolt"],
-      SubSubCategory: ["Choose", "Fruits", "Computers", "Shoes"],
-      SubCategory: ["Choose", "Lenovo", "Electronics"],
-      ChooseNew: ["Choose", "Lenovo", "Electronics"],
-      WarhouseStore: ["Choose", "Legendary", "Determined", "Sincere"],
-      ThomasStore: ["Choose", "Thomas", "Rasmussen", "Fred john"],
-      tags: ["red", "black"],
-      startdate: currentDate,
-      startdateOne: currentDateOne,
-      dateFormat: "dd-MM-yyyy",
-    };
-  },
-  methods: {
-    hideProduct() {
-      this.isVisible = false;
-    },
-    hideProduct1() {
-      this.isVisible1 = false;
-    },
-    showConfirmation() {
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-        confirmButtonClass: "btn btn-primary",
-        cancelButtonClass: "btn btn-danger ml-1",
-        buttonsStyling: false,
-      }).then((result) => {
-        if (result.value) {
-          Swal.fire({
-            icon: "success",
-            title: "Deleted!",
-            text: "Your file has been deleted.",
-            confirmButtonClass: "btn btn-success",
-          });
-        }
-      });
-    },
-  },
-  submitForm() {
-    this.$router.push("/inventory/add-product");
-  },
-  toggleCollapse() {
-    const collapseHeader = this.$refs.collapseHeader;
-
-    if (collapseHeader) {
-      collapseHeader.classList.toggle("active");
-      document.body.classList.toggle("header-collapse");
-    }
-  },
-};
-</script>
 
 <style src="vue-multiselect/dist/vue-multiselect.css"></style>

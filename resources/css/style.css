@@ -29656,7 +29656,7 @@ td p.description-para {
 .product-quantity {
   border: 1px solid #dbe0e6;
   background-color: #FAFBFE;
-  width: 105px;
+  width: 205px;
   height: 40px;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -29671,7 +29671,7 @@ td p.description-para {
 }
 
 .product-quantity input {
-  width: 35px;
+  width: 105px;
   border: 0;
   background-color: #FAFBFE;
   text-align: center;
