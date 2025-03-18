@@ -24,7 +24,7 @@ class ProductController extends Controller
         ]);
     }
 
-    public function create(Request $request): Response
+    public function create(): Response
     {
         $categories = Category::all();
         $fournisseurs = Fournisseur::all();

@@ -2,7 +2,6 @@
 import { ref, defineProps } from "vue";
 import { Link } from "@inertiajs/vue3";
 import VueMultiselect from "vue-multiselect";
-import Swal from "sweetalert2";
 import { useForm } from "@inertiajs/vue3";
 import apiClient from "@/api";
 
