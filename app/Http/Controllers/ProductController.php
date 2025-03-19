@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreProductRequest;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Fournisseur;
@@ -13,6 +14,9 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Product;
+use App\Models\ProductImage;
+use App\Models\ProductVariant;
 
 class ProductController extends Controller
 {
@@ -50,5 +54,47 @@ class ProductController extends Controller
             'measures' => $measures,
             'subCategories' => $subCategories
         ]);
+    }
+
+    public function store(StoreProductRequest $request)
+    {
+        $product = Product::create($request->only([
+            'category_id',
+            'fournisseur_id',
+            'unit_id',
+            'brand_id',
+            'type_id',
+            'measure_id',
+            'sub_category_id',
+            'store_id',
+            'reference',
+            'name',
+            'description'
+        ]));
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('product_images', 'public');
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'name' => $path,
+                ]);
+            }
+        }
+
+        if ($request->variants) {
+            foreach ($request->variants as $variant) {
+                ProductVariant::create([
+                    'product_id' => $product->id,
+                    'variant' => $variant['variant'] ?? null,
+                    'quantity' => $variant['quantity'] ?? 0,
+                    'quantity_alert' => $variant['quantity_alert'] ?? 0,
+                    'price' => $variant['price'] ?? 0,
+                    'buying_price' => $variant['buying_price'] ?? 0,
+                ]);
+            }
+        }
+
+        return $this->index($request);
     }
 }

@@ -1,8 +1,7 @@
 <script setup>
 import { ref, defineProps } from "vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, useForm } from "@inertiajs/vue3";
 import VueMultiselect from "vue-multiselect";
-import { useForm } from "@inertiajs/vue3";
 import apiClient from "@/api";
 
 const props = defineProps({
@@ -19,6 +18,18 @@ const form = useForm({
   measure_id: null,
   subCategory_id: null,
   reference: null,
+  description: null,
+  name: null,
+});
+
+const formErrors = ref({});
+
+const singleForm = useForm({
+  variant: null,
+  quantity: null,
+  quantity_alert: null,
+  price: null,
+  buying_price: null,
 });
 
 const units = ref([]);
@@ -29,26 +40,33 @@ const subCategories = ref([]);
 const loading = ref(false);
 const error = ref("");
 const images = ref([]);
-const variants = ["type", "measure", "unit", "brand"];
+const variants = [
+  { name: "type", arr: types },
+  { name: "measure", arr: measures },
+  { name: "unit", arr: units },
+  { name: "brand", arr: brands },
+];
 const selectedPricing = ref("single");
 const selectedVariant = ref("");
 const rows = ref([]);
 
 const changeProductPricing = (strg) => {
   selectedPricing.value = strg;
-}
+};
 
 const addRow = () => {
   if (!selectedVariant.value) return;
 
-  rows.value.push({
-    variation: selectedVariant.value,
-    price: "",
-    buyingPrice: "",
-    quantity: 0,
-    quantityAlert: 0,
-    isActive: false,
-  });
+  selectedVariant.value.arr.forEach((variant) => {
+    rows.value.push({
+      variation: selectedVariant.value.name,
+      value: variant.name,
+      price: "",
+      buying_price: "",
+      quantity: 0,
+      quantity_alert: 0,
+    });
+  })
 
   selectedVariant.value = "";
 };
@@ -66,11 +84,11 @@ const decrementQuantity = (row) => {
 };
 
 const incrementAlert = (row) => {
-  row.quantityAlert++;
+  row.quantity_alert++;
 };
 
 const decrementAlert = (row) => {
-  if (row.quantityAlert > 0) row.quantityAlert--;
+  if (row.quantity_alert > 0) row.quantity_alert--;
 };
 
 const handleFileUpload = (event) => {
@@ -142,7 +160,42 @@ const fetchRelatedData = async () => {
 };
 
 const submitForm = () => {
-  useRouter().push("/inventory/add-product");
+  form
+    .transform((data) => {
+      const formData = new FormData();
+
+      formData.append("category_id", data.category_id?.id || "");
+      formData.append("fournisseur_id", data.fournisseur_id?.id || "");
+      formData.append("unit_id", data.unit_id?.id || "");
+      formData.append("brand_id", data.brand_id?.id || "");
+      formData.append("type_id", data.type_id?.id || "");
+      formData.append("measure_id", data.measure_id?.id || "");
+      formData.append("subCategory_id", data.subCategory_id?.id || "");
+      formData.append("reference", data.reference || "");
+      formData.append("name", data.name || "");
+      formData.append("description", data.description || "");
+
+      if (Array.isArray(images.value) && images.value.length > 0) {
+        images.value.forEach((image, index) => {
+          formData.append(`images[${index}]`, image.file);
+        });
+      }
+
+      if (selectedPricing.value !== "single") {
+        formData.append("variants", JSON.stringify(rows.value));
+      } else {
+        formData.append("variants", JSON.stringify([singleForm]));
+      }
+
+      return formData;
+    })
+    .post(route("products.store"), {
+      forceFormData: true,
+      onError: (errors) => {
+        formErrors.value = errors;
+        console.log("Form submission failed:", errors);
+      },
+    });
 };
 </script>
 
@@ -201,15 +254,33 @@ const submitForm = () => {
                 <div class="row">
                   <div class="col-lg-4 col-sm-6 col-12">
                     <div class="mb-3 add-product">
-                      <label class="form-label">Fournisseur</label>
+                      <div class="add-newplus">
+                        <label class="form-label">Fournisseur</label>
+                        <a
+                          href="javascript:void(0);"
+                          data-bs-toggle="modal"
+                          data-bs-target="#add-units-category"
+                          class="text-secondary text-decoration-none"
+                          ><vue-feather
+                            type="plus-circle"
+                            class="plus-down-add"
+                          ></vue-feather
+                          ><span>Add New</span></a
+                        >
+                      </div>
                       <VueMultiselect
                         v-model="form.fournisseur_id"
                         :options="fournisseurs"
                         label="name"
                         track-by="id"
                         id="thomasstore"
-                        placeholder="Choose"
+                        placeholder="Choose fournisseur"
                       />
+                      <span
+                        class="text-danger"
+                        v-if="form.errors.fournisseur_id"
+                        >{{ form.errors.fournisseur_id }}
+                      </span>
                     </div>
                   </div>
                   <div class="col-lg-4 col-sm-6 col-12">
@@ -236,6 +307,39 @@ const submitForm = () => {
                         @update:modelValue="fetchRelatedData"
                         placeholder="Choose category"
                       />
+                      <span class="text-danger" v-if="form.errors.category_id"
+                        >{{ form.errors.category_id }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="mb-3 add-product">
+                      <div class="add-newplus">
+                        <label class="form-label">Sub Category</label>
+                        <a
+                          href="javascript:void(0);"
+                          data-bs-toggle="modal"
+                          data-bs-target="#add-units-category"
+                          class="text-secondary text-decoration-none"
+                          ><vue-feather
+                            type="plus-circle"
+                            class="plus-down-add"
+                          ></vue-feather
+                          ><span>Add New</span></a
+                        >
+                      </div>
+                      <VueMultiselect
+                        v-model="form.subCategory_id"
+                        :options="subCategories"
+                        label="name"
+                        track-by="id"
+                        placeholder="Choose sub category"
+                      />
+                      <span
+                        class="text-danger"
+                        v-if="form.errors.subCategory_id"
+                        >{{ form.errors.subCategory_id }}
+                      </span>
                     </div>
                   </div>
                   <div class="col-lg-4 col-sm-6 col-12">
@@ -261,6 +365,9 @@ const submitForm = () => {
                         track-by="id"
                         placeholder="Choose brand"
                       />
+                      <span class="text-danger" v-if="form.errors.brand_id"
+                        >{{ form.errors.brand_id }}
+                      </span>
                     </div>
                   </div>
                   <div class="col-lg-4 col-sm-6 col-12">
@@ -286,6 +393,9 @@ const submitForm = () => {
                         track-by="id"
                         placeholder="Choose unit"
                       />
+                      <span class="text-danger" v-if="form.errors.unit_id"
+                        >{{ form.errors.unit_id }}
+                      </span>
                     </div>
                   </div>
                   <div class="col-lg-4 col-sm-6 col-12">
@@ -311,6 +421,9 @@ const submitForm = () => {
                         track-by="id"
                         placeholder="Choose type"
                       />
+                      <span class="text-danger" v-if="form.errors.type_id"
+                        >{{ form.errors.type_id }}
+                      </span>
                     </div>
                   </div>
                   <div class="col-lg-4 col-sm-6 col-12">
@@ -336,29 +449,27 @@ const submitForm = () => {
                         track-by="id"
                         placeholder="Choose measure"
                       />
-                    </div>
-                  </div>
-                  <div class="col-lg-4 col-sm-6 col-12">
-                    <div class="mb-3 add-product">
-                      <label class="form-label">Sub Category</label>
-                      <VueMultiselect
-                        v-model="form.subCategory_id"
-                        :options="subCategories"
-                        label="name"
-                        track-by="id"
-                        placeholder="Choose sub category"
-                      />
+                      <span class="text-danger" v-if="form.errors.measure_id"
+                        >{{ form.errors.measure_id }}
+                      </span>
                     </div>
                   </div>
                   <div class="col-lg-4 col-sm-6 col-12">
                     <div class="mb-3 add-product">
                       <label class="form-label">Product Name</label>
-                      <input type="text" class="form-control" />
+                      <input
+                        type="text"
+                        class="form-control"
+                        v-model="form.name"
+                      />
+                      <span class="text-danger" v-if="form.errors.name">{{
+                        form.errors.name
+                      }}</span>
                     </div>
                   </div>
                   <div class="col-lg-4 col-sm-6 col-12">
                     <div class="input-blocks add-product list">
-                      <label>Reference</label>
+                      <label class="text-secondary fw-bold">Reference</label>
                       <input
                         v-model="form.reference"
                         type="text"
@@ -368,6 +479,9 @@ const submitForm = () => {
                       <button class="btn-primaryadd" @click="generateUUID">
                         Generate Code
                       </button>
+                      <span class="text-danger" v-if="form.errors.reference"
+                        >{{ form.errors.reference }}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -376,8 +490,15 @@ const submitForm = () => {
                     class="input-blocks summer-description-box transfer mb-3"
                   >
                     <label>Description</label>
-                    <textarea class="form-control h-100" rows="5"></textarea>
+                    <textarea
+                      class="form-control h-100"
+                      rows="5"
+                      v-model="form.description"
+                    ></textarea>
                     <p class="mt-1">Maximum 60 Characters</p>
+                    <span class="text-danger" v-if="form.errors.description"
+                      >{{ form.errors.description }}
+                    </span>
                   </div>
                 </div>
                 <!-- /Editor -->
@@ -436,7 +557,11 @@ const submitForm = () => {
                             value="single"
                             v-model="selectedPricing"
                           />
-                          <span class="checkmark" @click="changeProductPricing('single')"></span> Single Product</span
+                          <span
+                            class="checkmark"
+                            @click="changeProductPricing('single')"
+                          ></span>
+                          Single Product</span
                         >
                       </li>
                       <li class="nav-item" role="presentation">
@@ -456,35 +581,73 @@ const submitForm = () => {
                             value="variant"
                             v-model="selectedPricing"
                           />
-                          <span class="checkmark" @click="changeProductPricing('variant')"></span> Variable Product</span
+                          <span
+                            class="checkmark"
+                            @click="changeProductPricing('variant')"
+                          ></span>
+                          Variable Product</span
                         >
                       </li>
                     </ul>
                   </div>
 
                   <div class="row mt-3" v-show="selectedPricing === 'single'">
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-3 col-sm-6 col-12">
                       <div class="mb-3 add-product">
                         <label class="form-label">Quantity</label>
-                        <input type="number" class="form-control" />
+                        <input
+                          type="number"
+                          class="form-control"
+                          v-model="singleForm.quantity"
+                        />
+                        <span
+                          class="text-danger"
+                          v-if="singleForm.errors.quantity"
+                          >{{ singleForm.errors.quantity }}
+                        </span>
                       </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-3 col-sm-6 col-12">
                       <div class="mb-3 add-product">
                         <label class="form-label">Quantity Alert</label>
-                        <input type="number" class="form-control" />
+                        <input
+                          type="number"
+                          class="form-control"
+                          v-model="singleForm.quantity_alert"
+                        />
+                        <span
+                          class="text-danger"
+                          v-if="singleForm.errors.quantity_alert"
+                          >{{ singleForm.errors.quantity_alert }}
+                        </span>
                       </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-3 col-sm-6 col-12">
                       <div class="mb-3 add-product">
                         <label class="form-label">Buying Price</label>
-                        <input type="number" class="form-control" />
+                        <input
+                          type="number"
+                          class="form-control"
+                          v-model="singleForm.buying_price"
+                        />
+                        <span
+                          class="text-danger"
+                          v-if="singleForm.errors.buying_price"
+                          >{{ singleForm.errors.buying_price }}
+                        </span>
                       </div>
                     </div>
-                    <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="col-lg-3 col-sm-6 col-12">
                       <div class="mb-3 add-product">
                         <label class="form-label">Price</label>
-                        <input type="number" class="form-control" />
+                        <input
+                          type="number"
+                          class="form-control"
+                          v-model="singleForm.price"
+                        />
+                        <span class="text-danger" v-if="singleForm.errors.price"
+                          >{{ singleForm.errors.price }}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -499,6 +662,8 @@ const submitForm = () => {
                               <VueMultiselect
                                 v-model="selectedVariant"
                                 :options="variants"
+                                label="name"
+                                track-by="name"
                                 placeholder="Choose Variant"
                               />
                             </div>
@@ -519,6 +684,7 @@ const submitForm = () => {
                           <thead>
                             <tr>
                               <th>Variation</th>
+                              <th>Value</th>
                               <th>Price</th>
                               <th>Buying Price</th>
                               <th>Quantity</th>
@@ -541,6 +707,16 @@ const submitForm = () => {
                               <td>
                                 <div class="add-product">
                                   <input
+                                    type="text"
+                                    class="form-control"
+                                    v-model="row.value"
+                                    readonly
+                                  />
+                                </div>
+                              </td>
+                              <td>
+                                <div class="add-product">
+                                  <input
                                     type="number"
                                     class="form-control"
                                     v-model="row.price"
@@ -553,7 +729,7 @@ const submitForm = () => {
                                   <input
                                     type="number"
                                     class="form-control"
-                                    v-model="row.buyingPrice"
+                                    v-model="row.buying_price"
                                     placeholder="Enter Buying Price"
                                   />
                                 </div>
@@ -588,19 +764,19 @@ const submitForm = () => {
                                     href="javascript:void(0)"
                                     @click="decrementAlert(row)"
                                   >
-                                   -
+                                    -
                                   </a>
                                   <input
                                     type="number"
                                     class="quntity-input"
-                                    v-model="row.quantityAlert"
+                                    v-model="row.quantity_alert"
                                   />
                                   <a
                                     class="fw-bold fs-5 text-decoration-none"
                                     href="javascript:void(0)"
                                     @click="incrementAlert(row)"
                                   >
-                                   +
+                                    +
                                   </a>
                                 </div>
                               </td>
@@ -611,7 +787,10 @@ const submitForm = () => {
                                     @click="deleteRow(index)"
                                     href="javascript:void(0);"
                                   >
-                                  <VueFeather type="trash-2" class="feather-trash-2" />
+                                    <VueFeather
+                                      type="trash-2"
+                                      class="feather-trash-2"
+                                    />
                                   </a>
                                 </div>
                               </td>
@@ -621,11 +800,9 @@ const submitForm = () => {
                       </div>
                     </div>
                   </div>
-                  
                 </div>
                 <div class="tab-content" id="pills-tabContent">
                   <div>
-
                     <div
                       class="accordion-card-one accordion"
                       id="accordionExample3"
@@ -687,6 +864,11 @@ const submitForm = () => {
                                       alt="image"
                                       class="object-fit-cover border h-100 w-100"
                                     />
+                                    <span
+                                      class="text-danger"
+                                      v-if="form.errors['images.' + index]"
+                                      >{{ form.errors["images." + index] }}
+                                    </span>
                                     <a
                                       href="javascript:void(0);"
                                       @click="removeImage(index)"
@@ -705,7 +887,6 @@ const submitForm = () => {
                       </div>
                     </div>
                   </div>
-                
                 </div>
               </div>
             </div>
@@ -716,7 +897,7 @@ const submitForm = () => {
     <div class="col-lg-12">
       <div class="btn-addproduct mb-4 d-flex">
         <button type="button" class="btn-cancel rounded me-2">Cancel</button>
-        <button type="submit" class="project-btn">Save Product</button>
+        <button class="project-btn" type="submit">Save Product</button>
       </div>
     </div>
   </form>
