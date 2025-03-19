@@ -6,10 +6,10 @@
                     <form @submit.prevent="submit" class="w-50">
                         <div class="login-userset">
                             <div class="login-logo logo-normal">
-                                <img src="Assets/img/logo2.png" alt="img" />
+                                <img src="/Assets/img/logo2.png" alt="img" />
                             </div>
                             <p to="/dashboard" class="login-logo logo-white">
-                                <img src="Assets/img/logo-white.png" alt="" />
+                                <img src="/Assets/img/logo-white.png" alt="" />
                             </p>
                             <div class="login-userheading">
                                 <h3>Sign In</h3>
@@ -22,7 +22,7 @@
                                         :class="{ 'is-invalid': form.errors.email }" v-model="form.email" required
                                         autofocus autocomplete="username" />
                                     <div class="invalid-feedback">{{ form.errors.email }}</div>
-                                    <img src="Assets/icons/mail.svg" alt="img" />
+                                    <img src="/Assets/icons/mail.svg" alt="img" />
                                 </div>
                             </div>
                             <div class="form-login">
@@ -76,7 +76,7 @@
                     </form>
                 </div>
                 <div class="login-img">
-                    <img src="Assets/img/login02.png" alt="img" />
+                    <img src="/Assets/img/login02.png" alt="img" />
                 </div>
             </div>
         </div>

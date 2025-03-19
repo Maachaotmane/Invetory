@@ -6,10 +6,10 @@
                     <form @submit.prevent="submit" class="w-50">
                         <div class="login-userset">
                             <div class="login-logo logo-normal">
-                                <img src="Assets/img/logo2.png" alt="img" />
+                                <img src="/Assets/img/logo2.png" alt="img" />
                             </div>
                             <router-link to="/dashboard" class="login-logo logo-white">
-                                <img src="Assets/img/logo-white.png" alt="" />
+                                <img src="/Assets/img/logo-white.png" alt="" />
                             </router-link>
                             <div class="login-userheading">
                                 <h3>Register</h3>
@@ -21,7 +21,7 @@
                                     <input id="name" type="text" class="form-control"
                                         :class="{ 'is-invalid': form.errors.name }" v-model="form.name" required
                                         autofocus autocomplete="name" />
-                                    <img src="Assets/icons/user-icon.svg" alt="img" />
+                                    <img src="/Assets/icons/user-icon.svg" alt="img" />
                                     <div class="invalid-feedback">{{ form.errors.name }}</div>
                                 </div>
                             </div>
@@ -31,7 +31,7 @@
                                     <input id="email" type="email" class="form-control"
                                         :class="{ 'is-invalid': form.errors.email }" v-model="form.email" required
                                         autocomplete="username" />
-                                    <img src="Assets/icons/mail.svg" alt="img" />
+                                    <img src="/Assets/icons/mail.svg" alt="img" />
                                     <div class="invalid-feedback">{{ form.errors.email }}</div>
                                 </div>
                             </div>
@@ -90,7 +90,7 @@
                     </form>
                 </div>
                 <div class="login-img">
-                    <img src="Assets/img/register02.png" alt="img" />
+                    <img src="/Assets/img/register02.png" alt="img" />
                 </div>
             </div>
         </div>

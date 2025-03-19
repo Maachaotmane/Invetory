@@ -9,13 +9,13 @@ import "@fortawesome/fontawesome-free/css/fontawesome.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import Antd from "ant-design-vue";
 import VueFeather from "vue-feather";
+import DatePicker from "vue3-datepicker";
 import Vue3Autocounter from "vue3-autocounter";
 import { createInertiaApp } from "@inertiajs/vue3";
 import { resolvePageComponent } from "laravel-vite-plugin/inertia-helpers";
 import { createApp, h } from "vue";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 import { BootstrapVue3, BToastPlugin } from "bootstrap-vue-3";
-// import VueSelect from "vue3-select2-component";
 
 const appName = import.meta.env.VITE_APP_NAME || "App";
 
@@ -30,6 +30,7 @@ createInertiaApp({
     return createApp({ render: () => h(App, props) })
       .component(VueFeather.name, VueFeather)
       .component("vue3-autocounter", Vue3Autocounter)
+      .component("date-picker", DatePicker)
       .use(Antd)
       .use(plugin)
       .use(ZiggyVue)

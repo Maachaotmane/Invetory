@@ -29,7 +29,7 @@
                     <h5>Brand</h5>
                 </div>
                 <div class="dash-imgs">
-                    <img src="Assets/icons/file-text-icon-01.svg" class="img-fluid" alt="icon" />
+                    <img src="/Assets/icons/file-text-icon-01.svg" class="img-fluid" alt="icon" />
                 </div>
             </div>
         </div>
