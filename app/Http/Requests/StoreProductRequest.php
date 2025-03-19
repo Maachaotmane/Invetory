@@ -29,6 +29,7 @@ class StoreProductRequest extends FormRequest
             'images.*'         => 'image|mimes:jpeg,png,jpg,gif|max:2048',
             'variants'         => 'nullable|array',
             'variants.*.variant'        => 'nullable|string',
+            'variants.*.value'          => 'nullable|string',
             'variants.*.quantity'       => 'nullable|numeric|min:0',
             'variants.*.quantity_alert' => 'nullable|numeric|min:0',
             'variants.*.price'          => 'nullable|numeric|min:0',
@@ -49,6 +50,7 @@ class StoreProductRequest extends FormRequest
             $cleanedVariants = array_map(function ($variant) {
                 return [
                     'variant' => $variant['variant'] ?? null,
+                    'value' => $variant['value'] ?? null,
                     'quantity' => $variant['quantity'] ?? null,
                     'quantity_alert' => $variant['quantity_alert'] ?? null,
                     'price' => $variant['price'] ?? null,

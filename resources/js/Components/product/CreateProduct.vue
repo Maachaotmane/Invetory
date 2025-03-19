@@ -59,7 +59,7 @@ const addRow = () => {
 
   selectedVariant.value.arr.forEach((variant) => {
     rows.value.push({
-      variation: selectedVariant.value.name,
+      variant: selectedVariant.value.name,
       value: variant.name,
       price: "",
       buying_price: "",
@@ -683,7 +683,7 @@ const submitForm = () => {
                         <table class="table">
                           <thead>
                             <tr>
-                              <th>Variation</th>
+                              <th>Variant</th>
                               <th>Value</th>
                               <th>Price</th>
                               <th>Buying Price</th>
@@ -699,7 +699,7 @@ const submitForm = () => {
                                   <input
                                     type="text"
                                     class="form-control"
-                                    v-model="row.variation"
+                                    v-model="row.variant"
                                     readonly
                                   />
                                 </div>

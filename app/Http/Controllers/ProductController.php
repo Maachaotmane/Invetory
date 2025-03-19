@@ -58,19 +58,20 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
-        $product = Product::create($request->only([
-            'category_id',
-            'fournisseur_id',
-            'unit_id',
-            'brand_id',
-            'type_id',
-            'measure_id',
-            'sub_category_id',
-            'store_id',
-            'reference',
-            'name',
-            'description'
-        ]));
+
+        $product = Product::create([
+            'category_id'      => $request->category_id,
+            'fournisseur_id'   => $request->fournisseur_id,
+            'unit_id'          => $request->unit_id,
+            'brand_id'         => $request->brand_id,
+            'type_id'          => $request->type_id,
+            'measure_id'       => $request->measure_id,
+            'sub_category_id'  => $request->sub_category_id,
+            'name'             => $request->name,
+            'reference'        => $request->reference,
+            'description'      => $request->description,
+            'created_by'       => auth()->user()->id
+        ]);
 
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
@@ -87,10 +88,11 @@ class ProductController extends Controller
                 ProductVariant::create([
                     'product_id' => $product->id,
                     'variant' => $variant['variant'] ?? null,
+                    'value' => $variant['value'] ?? null,
                     'quantity' => $variant['quantity'] ?? 0,
                     'quantity_alert' => $variant['quantity_alert'] ?? 0,
-                    'price' => $variant['price'] ?? 0,
-                    'buying_price' => $variant['buying_price'] ?? 0,
+                    'price' => !empty($variant['price']) ? $variant['price'] : 0,
+                    'buying_price' => !empty($variant['buying_price']) ? $variant['buying_price'] : 0,
                 ]);
             }
         }
