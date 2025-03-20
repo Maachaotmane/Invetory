@@ -1,5 +1,4 @@
 <template>
-
     <Head title="Product" />
 
     <NavLayout />
@@ -8,7 +7,7 @@
     <div class="page-wrapper">
         <div class="content">
             <ProductListHeader />
-            <ProductTable />
+            <ProductTable :products="products" />
         </div>
     </div>
 </template>
@@ -19,4 +18,8 @@ import NavLayout from '@/Layouts/NavLayout.vue';
 import SideLayout from '@/Layouts/SideLayout.vue';
 import ProductListHeader from '@/Components/product/ProductListHeader.vue';
 import ProductTable from '@/Components/product/ProductTable.vue';
+
+defineProps({
+    products: Object,
+});
 </script>

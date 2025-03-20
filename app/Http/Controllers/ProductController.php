@@ -22,7 +22,19 @@ class ProductController extends Controller
 {
     public function index(Request $request): Response
     {
+        $searchQuery = $request->input('search');
+
+        $products = Product::query()
+            ->with(['fournisseur', 'category', 'subCategory', 'images', 'variants', 'unit', 'brand', 'type', 'measure', 'user'])
+            ->when($searchQuery, function ($query, $searchQuery) {
+                $query->where('name', 'like', "%{$searchQuery}%")
+                    ->orWhere('reference', 'like', "%{$searchQuery}%");
+            })
+            ->paginate(2);
+
         return Inertia::render('Product/ProductList', [
+            'products' => $products,
+            'filters' => $request->only(['search']),
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);
@@ -97,6 +109,13 @@ class ProductController extends Controller
             }
         }
 
-        return $this->index($request);
+        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+    }
+
+    public function destroy(int $id)
+    {
+        $product = Product::find($id);
+        $product->delete();
+        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
 }

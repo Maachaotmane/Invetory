@@ -63,4 +63,8 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariant::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'created_by');    }
 }
