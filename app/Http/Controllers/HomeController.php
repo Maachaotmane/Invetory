@@ -17,8 +17,8 @@ class HomeController extends Controller
         $fournisseurController = app(FournisseurController::class);
 
         return Inertia::render('Home/Home', [
-            'clients' => $clientController->index($request),
-            'fournisseurs' => $fournisseurController->index($request),
+            'clients' => $clientController->getAll($request),
+            'fournisseurs' => $fournisseurController->getAll($request),
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);

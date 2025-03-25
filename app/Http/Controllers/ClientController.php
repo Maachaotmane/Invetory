@@ -26,6 +26,24 @@ class ClientController extends Controller
     }
 
     /**
+     * Display a listing of the resource with search by name, email and pagination.
+     */
+    public function getAll(Request $request)
+    {
+        $query = Client::query();
+
+        if ($request->has('searchClient')) {
+            $search = $request->input('searchClient');
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+        }
+
+        $clients = $query->orderByRaw('COALESCE(credit_limit, 0) - COALESCE(total_due_amount, 0) asc')->get();
+
+        return $clients;
+    }
+
+    /**
      * Show the form for creating a new resource.
      */
     public function create()

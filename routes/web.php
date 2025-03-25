@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/fournisseurs/{id}', [FournisseurController::class, 'destroy'])->name('fournisseurs.destroy');
     Route::get('/fournisseurs', [FournisseurController::class, 'index'])->name('fournisseurs.index');
     Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
+    Route::get('/clients/all', [ClientController::class, 'getAll'])->name('clients.all');
     Route::get('/families', [FamilyController::class, 'index'])->name('families.index');
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');

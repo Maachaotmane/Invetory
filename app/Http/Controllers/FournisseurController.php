@@ -25,6 +25,21 @@ class FournisseurController extends Controller
         return $fournisseurs;
     }
 
+    public function getAll(Request $request)
+    {
+        $query = Fournisseur::query();
+
+        if ($request->has('searchFournisseur')) {
+            $search = $request->input('searchFournisseur');
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+        }
+
+        $fournisseurs = $query->get();
+
+        return $fournisseurs;
+    }
+
     /**
      * Show the form for creating a new resource.
      */
