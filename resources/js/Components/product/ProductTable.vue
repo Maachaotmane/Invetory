@@ -4,22 +4,16 @@
       <div class="table-top">
         <div class="search-set">
           <div class="search-input">
-            <input type="text" placeholder="Search" class="dark-input" />
+            <input
+              type="text"
+              v-model="searchQuery"
+              placeholder="Search"
+              class="dark-input"
+            />
             <a href="javascript:void(0);" class="btn btn-searchset">
               <i data-feather="search" class="feather-search"></i>
             </a>
           </div>
-        </div>
-        <div class="search-path">
-          <a
-            class="btn btn-filter"
-            id="filter_search"
-            @click="toggleFilter"
-            :class="{ setclose: filter }"
-          >
-            <vue-feather type="filter" class="filter-icon"></vue-feather>
-            <span><img src="/Assets/img/icons/closes.svg" alt="img" /></span>
-          </a>
         </div>
         <div class="form-sort">
           <vue-feather type="sliders" class="info-img"></vue-feather>
@@ -30,111 +24,36 @@
           />
         </div>
       </div>
-
-      <div
-        class="card mb-0"
-        :style="{ display: filter ? 'block' : 'none' }"
-        id="filter_inputs"
-      >
-        <div class="card-body pb-0">
-          <div class="row">
-            <div class="col-lg-12 col-sm-12">
-              <div class="row">
-                <div class="col-lg-2 col-sm-6 col-12">
-                  <div class="input-blocks">
-                    <vue-feather type="box" class="info-img"></vue-feather>
-                    <vue-select
-                      :options="ChooseFilter"
-                      id="choosefilter"
-                      placeholder="Choose Product"
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-2 col-sm-6 col-12">
-                  <div class="input-blocks">
-                    <vue-feather
-                      type="stop-circle"
-                      class="info-img"
-                    ></vue-feather>
-                    <vue-select
-                      :options="CategroyFilter"
-                      id="categroyfilter"
-                      placeholder="Choose Category"
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-2 col-sm-6 col-12">
-                  <div class="input-blocks">
-                    <vue-feather
-                      type="git-merge"
-                      class="info-img"
-                    ></vue-feather>
-                    <vue-select
-                      :options="CategroySubFilter"
-                      id="categroysubfilter"
-                      placeholder="Choose Sub Category"
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-2 col-sm-6 col-12">
-                  <div class="input-blocks">
-                    <vue-feather
-                      type="stop-circle"
-                      class="info-img"
-                    ></vue-feather>
-                    <vue-select
-                      :options="BrandFilter"
-                      id="brandfilter"
-                      placeholder="All Brand"
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-2 col-sm-6 col-12">
-                  <div class="input-blocks">
-                    <i class="fas fa-money-bill info-img"></i>
-                    <vue-select
-                      :options="PriceFilter"
-                      id="Pricefilter"
-                      placeholder="Price"
-                    />
-                  </div>
-                </div>
-                <div class="col-lg-2 col-sm-6 col-12">
-                  <div class="input-blocks">
-                    <a class="btn btn-filters ms-auto">
-                      <i data-feather="search" class="feather-search"></i>
-                      Search
-                    </a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div class="table-responsive product-list">
         <a-table
           class="table datanew table-hover table-center mb-0"
           :columns="columns"
-          :data-source="data"
+          :data-source="filteredData"
+          :pagination="pagination"
+          @change="handleTableChange"
         >
           <template #bodyCell="{ column, record }">
             <template v-if="column.key === 'Product'">
               <div class="productimgname">
                 <a href="javascript:void(0);" class="product-img stock-img">
-                  <img :src="`/Assets/img/${record.Image}`" alt="product" />
+                  <img
+                    v-if="record.images.length > 0"
+                    :src="`/storage/${record.images[0].name}`"
+                    alt=""
+                  />
+                  <img
+                    v-else
+                    src="/Assets/img/default-product.png"
+                    alt=""
+                  />
                 </a>
                 <a href="javascript:void(0);" class="text-decoration-none">{{
-                  record.Product
+                  record.name
                 }}</a>
               </div>
             </template>
             <template v-else-if="column.key === 'CreatedBy'">
               <td class="userimgname">
-                <a href="javascript:void(0);" class="product-img me-2">
-                  <img :src="`/Assets/img/${record.UserImage}`" alt="product" />
-                </a>
                 <a href="javascript:void(0);" class="text-decoration-none">{{
                   record.CreatedBy
                 }}</a>
@@ -148,7 +67,7 @@
                     href="javascript:void(0);"
                     data-bs-toggle="modal"
                     data-bs-target="#update-client"
-                    @click="setClientToUpdate(client)"
+                    @click="setClientToUpdate(record)"
                   >
                     <VueFeather type="eye" class="feather-eye" />
                   </a>
@@ -157,13 +76,13 @@
                     href="javascript:void(0);"
                     data-bs-toggle="modal"
                     data-bs-target="#update-client"
-                    @click="setClientToUpdate(client)"
+                    @click="setClientToUpdate(record)"
                   >
                     <VueFeather type="edit" class="feather-edit" />
                   </a>
                   <a
                     class="confirm-text p-2"
-                    @click="showConfirmation('clients.destroy', client.id)"
+                    @click="showConfirmation('products.destroy', record.id)"
                     href="javascript:void(0);"
                   >
                     <VueFeather type="trash-2" class="feather-trash-2" />
@@ -177,131 +96,54 @@
     </div>
   </div>
 </template>
+
 <script>
-import { ref } from "vue";
+import { ref, computed, watch } from "vue";
 import Swal from "sweetalert2";
 import VueFeather from "vue-feather";
+import { router } from "@inertiajs/vue3";
 
 export default {
-  setup() {
-    const filter = ref(false);
-    const Sortby = ref(["Sort by Date", "14 09 23", "11 09 23"]);
-    const ChooseFilter = ref([
-      "Choose Product",
-      "Lenovo 3rd Generation",
-      "Nike Jordan",
-    ]);
-    const CategroyFilter = ref(["Laptop", "Shoe"]);
-    const CategroySubFilter = ref([
-      "Choose Sub Category",
-      "Computers",
-      "Fruits",
-    ]);
-    const BrandFilter = ref(["Lenovo", "Nike"]);
-    const PriceFilter = ref(["Price", "$12500.00", "$12500.00"]);
+  props: {
+    products: Object,
+  },
+  setup(props) {
+    const searchQuery = ref("");
+    const currentPage = ref(props.products.current_page);
+    const pagination = ref({
+      current: props.products.current_page,
+      pageSize: props.products.per_page,
+      total: props.products.total,
+    });
 
-    const columns = ref([
-      {
-        title: "Product",
-        dataIndex: "Product",
-        key: "Product",
-        sorter: (a, b) => a.Product.localeCompare(b.Product),
-      },
-      {
-        title: "SKU",
-        dataIndex: "SKU",
-        sorter: (a, b) => a.SKU.localeCompare(b.SKU),
-      },
-      {
-        title: "Category",
-        dataIndex: "Category",
-        sorter: (a, b) => a.Category.localeCompare(b.Category),
-      },
-      {
-        title: "Brand",
-        dataIndex: "Brand",
-        sorter: (a, b) => a.Brand.localeCompare(b.Brand),
-      },
-      {
-        title: "Price",
-        dataIndex: "Price",
-        sorter: (a, b) => a.Price.localeCompare(b.Price),
-      },
-      {
-        title: "Unit",
-        dataIndex: "Unit",
-        sorter: (a, b) => a.Unit.localeCompare(b.Unit),
-      },
-      {
-        title: "Qty",
-        dataIndex: "Qty",
-        sorter: (a, b) => a.Qty.localeCompare(b.Qty),
-      },
-      {
-        title: "Created by",
-        dataIndex: "CreatedBy",
-        key: "CreatedBy",
-        sorter: (a, b) => a.CreatedBy.localeCompare(b.CreatedBy),
-      },
-      { title: "Action", key: "action", sorter: true },
-    ]);
+    const tableData = computed(() => {
+      return props.products.data.map((product) => ({
+        key: product.id,
+        id: product.id,
+        name: product.name,
+        reference: product.reference,
+        Category: product.category?.name || "N/A",
+        Brand: product.brand?.name || "N/A",
+        Price: product.variants[0]?.price || "N/A",
+        Unit: product.unit?.name || "N/A",
+        Qty: product.variants[0]?.quantity || "N/A",
+        CreatedBy: product.user?.name,
+        images: product.images,
+      }));
+    });
 
-    const data = ref([
-      {
-        Product: "Red Premium Handy",
-        SKU: "PT007",
-        Category: "Bags",
-        Brand: "Versace",
-        Price: "$2024.00",
-        Unit: "Kg",
-        Qty: "747",
-        Image: "stock-img-01.png",
-        UserImage: "user-01.jpg",
-        CreatedBy: "Steven",
-      },
-      {
-        Product: "Iphone 14 Pro",
-        SKU: "PT008",
-        Category: "Phone",
-        Brand: "Iphone",
-        Price: "$1698.00",
-        Unit: "Pc",
-        Qty: "897",
-        Image: "stock-img-02.png",
-        UserImage: "user-01.jpg",
-        CreatedBy: "Gravely",
-      },
-      {
-        Product: "Black Slim 200",
-        SKU: "PT009",
-        Category: "Chairs",
-        Brand: "Bently",
-        Price: "$6794.00",
-        Unit: "Pc",
-        Qty: "741",
-        Image: "stock-img-03.png",
-        UserImage: "user-01.jpg",
-        CreatedBy: "Kevin",
-      },
-      {
-        Product: "Woodcraft Sandal",
-        SKU: "PT010",
-        Category: "Bags",
-        Brand: "Woodcraft",
-        Price: "$4547.00",
-        Unit: "Kg",
-        Qty: "148",
-        Image: "stock-img-04.png",
-        UserImage: "user-01.jpg",
-        CreatedBy: "Grillo",
-      },
-    ]);
+    const filteredData = computed(() => {
+      return tableData.value.filter((item) =>
+        Object.values(item).some((val) =>
+          String(val).toLowerCase().includes(searchQuery.value.toLowerCase())
+      ))
+    });
 
-    const toggleFilter = () => {
-      filter.value = !filter.value;
+    const handleTableChange = (pag) => {
+      router.get(props.products.path, { page: pag.current }, { preserveState: true });
     };
 
-    const showConfirmation = () => {
+    const showConfirmation = (routeName, id) => {
       Swal.fire({
         title: "Are you sure?",
         text: "You won't be able to revert this!",
@@ -313,28 +155,79 @@ export default {
         buttonsStyling: false,
       }).then((result) => {
         if (result.isConfirmed) {
-          Swal.fire({
-            icon: "success",
-            title: "Deleted!",
-            text: "Your file has been deleted.",
-            confirmButtonClass: "btn btn-success",
+          router.delete(route(routeName, id), {
+            onSuccess: () => {
+              Swal.fire({
+                icon: "success",
+                title: "Deleted!",
+                text: "Your product has been deleted.",
+                confirmButtonClass: "btn btn-success",
+              });
+            },
           });
         }
       });
     };
 
+    watch(
+      () => props.products,
+      (newProducts) => {
+        pagination.value.current = newProducts.current_page;
+        pagination.value.total = newProducts.total;
+      }
+    );
+
     return {
-      filter,
-      Sortby,
-      ChooseFilter,
-      CategroyFilter,
-      CategroySubFilter,
-      BrandFilter,
-      PriceFilter,
-      columns,
-      data,
-      toggleFilter,
+      searchQuery,
+      pagination,
+      filteredData,
+      handleTableChange,
       showConfirmation,
+      columns: [
+        {
+          title: "Product",
+          dataIndex: "name",
+          key: "Product",
+          sorter: (a, b) => a.name.localeCompare(b.name),
+        },
+        {
+          title: "Reference",
+          dataIndex: "reference",
+          sorter: (a, b) => a.reference.localeCompare(b.reference),
+        },
+        {
+          title: "Category",
+          dataIndex: "Category",
+          sorter: (a, b) => a.Category.localeCompare(b.Category),
+        },
+        {
+          title: "Brand",
+          dataIndex: "Brand",
+          sorter: (a, b) => a.Brand.localeCompare(b.Brand),
+        },
+        {
+          title: "Price",
+          dataIndex: "Price",
+          sorter: (a, b) => a.Price.localeCompare(b.Price),
+        },
+        {
+          title: "Unit",
+          dataIndex: "Unit",
+          sorter: (a, b) => a.Unit.localeCompare(b.Unit),
+        },
+        {
+          title: "Qty",
+          dataIndex: "Qty",
+          sorter: (a, b) => a.Qty.localeCompare(b.Qty),
+        },
+        {
+          title: "Created by",
+          dataIndex: "CreatedBy",
+          key: "CreatedBy",
+          sorter: (a, b) => a.CreatedBy.localeCompare(b.CreatedBy),
+        },
+        { title: "Action", key: "action", sorter: true },
+      ],
     };
   },
 };

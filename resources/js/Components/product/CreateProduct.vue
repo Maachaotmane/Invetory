@@ -16,7 +16,7 @@ const form = useForm({
   brand_id: null,
   type_id: null,
   measure_id: null,
-  subCategory_id: null,
+  sub_category_id: null,
   reference: null,
   description: null,
   name: null,
@@ -124,7 +124,7 @@ const generateUUID = (e) => {
 
 const fetchRelatedData = async () => {
   form.brand_id = null;
-  form.subCategory_id = null;
+  form.sub_category_id = null;
   form.measure_id = null;
   form.unit_id = null;
   form.type_id = null;
@@ -170,7 +170,7 @@ const submitForm = () => {
       formData.append("brand_id", data.brand_id?.id || "");
       formData.append("type_id", data.type_id?.id || "");
       formData.append("measure_id", data.measure_id?.id || "");
-      formData.append("subCategory_id", data.subCategory_id?.id || "");
+      formData.append("sub_category_id", data.sub_category_id?.id || "");
       formData.append("reference", data.reference || "");
       formData.append("name", data.name || "");
       formData.append("description", data.description || "");
@@ -329,7 +329,7 @@ const submitForm = () => {
                         >
                       </div>
                       <VueMultiselect
-                        v-model="form.subCategory_id"
+                        v-model="form.sub_category_id"
                         :options="subCategories"
                         label="name"
                         track-by="id"
@@ -337,8 +337,8 @@ const submitForm = () => {
                       />
                       <span
                         class="text-danger"
-                        v-if="form.errors.subCategory_id"
-                        >{{ form.errors.subCategory_id }}
+                        v-if="form.errors.sub_category_id"
+                        >{{ form.errors.sub_category_id }}
                       </span>
                     </div>
                   </div>
