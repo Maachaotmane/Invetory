@@ -68,4 +68,23 @@ class CategoryController extends Controller
 
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
     }
+
+    public function getRelatedData($categoryId)
+    {
+        // Find the category or return a 404 error if not found
+        $category = Category::findOrFail($categoryId);
+
+        // Load all related data
+        $relatedData = [
+            'category' => $category,
+            'sub_categories' => $category->subCategories,
+            'types' => $category->types,
+            'measures' => $category->measures,
+            'units' => $category->units,
+            'brands' => $category->brands,
+        ];
+
+        // Return the data as a JSON response
+        return response()->json($relatedData);
+    }
 }

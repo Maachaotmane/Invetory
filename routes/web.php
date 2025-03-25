@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('brands', BrandController::class);
     Route::post('/product/store', [ProductController::class, 'store'])->name('products.store');
     Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+    Route::get('/categories/{category}/related', [CategoryController::class, 'getRelatedData']);
 });
 
 require __DIR__ . '/auth.php';
