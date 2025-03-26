@@ -64,6 +64,11 @@ class Product extends Model
         return $this->hasMany(ProductVariant::class);
     }
 
+    public function isVariant()
+    {
+        return $this->variants->count() > 1;
+    }
+    
     public function user()
     {
         return $this->belongsTo(User::class, 'created_by');    }

@@ -53,7 +53,12 @@
   }
 
   .red-background {
-    background-color: red !important;
-}
+    background-color: rgb(244, 67, 67) !important;
+    color: #ffffff;
+    }
+    .red-background:hover {
+        background-color: rgb(197, 43, 43) !important;
+        color: #000000;
+    }
   </style>
   

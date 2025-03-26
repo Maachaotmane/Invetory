@@ -158,7 +158,7 @@
       <ul class="submenu-ul">
         <h4 class="submenu-hdr fs-6">Stock</h4>
         <li class="submenu-li">
-          <Link href="/" class="side-links">
+          <Link href="/stock-stat" class="side-links">
           <i data-name="copy" data-tags="clone,duplicate" data-type="copy" class="vue-feather vue-feather--copy"><svg
               xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

@@ -9,6 +9,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MeasureController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StockStatsController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UnitController;
@@ -50,6 +51,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
     Route::get('/clients/all', [ClientController::class, 'getAll'])->name('clients.all');
     Route::get('/families', [FamilyController::class, 'index'])->name('families.index');
+    Route::get('/stock-stat', [StockStatsController::class, 'index'])->name('stock-stat.index');
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
     Route::resource('categories', CategoryController::class);
