@@ -26,8 +26,8 @@ const formErrors = ref({});
 
 const singleForm = useForm({
   variant: null,
-  quantity: null,
-  quantity_alert: null,
+  quantity: 0,
+  quantity_alert: 0,
   price: null,
   buying_price: null,
 });
@@ -65,8 +65,9 @@ const addRow = () => {
       buying_price: "",
       quantity: 0,
       quantity_alert: 0,
+      images: [],
     });
-  })
+  });
 
   selectedVariant.value = "";
 };
@@ -105,8 +106,26 @@ const handleFileUpload = (event) => {
   }
 };
 
+const handleVariantFileUpload = (event, row) => {
+  const files = event.target.files;
+  if (files) {
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        row.images.push({ url: e.target.result, file: file });
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+};
+
 const removeImage = (index) => {
   images.value.splice(index, 1);
+};
+
+const removeVariantImage = (index, row) => {
+  row.images.splice(index, 1);
 };
 
 const generateUUID = (e) => {
@@ -594,34 +613,18 @@ const submitForm = () => {
                   <div class="row mt-3" v-show="selectedPricing === 'single'">
                     <div class="col-lg-3 col-sm-6 col-12">
                       <div class="mb-3 add-product">
-                        <label class="form-label">Quantity</label>
+                        <label class="form-label">Price</label>
                         <input
                           type="number"
                           class="form-control"
-                          v-model="singleForm.quantity"
+                          v-model="singleForm.price"
                         />
-                        <span
-                          class="text-danger"
-                          v-if="singleForm.errors.quantity"
-                          >{{ singleForm.errors.quantity }}
+                        <span class="text-danger" v-if="singleForm.errors.price"
+                          >{{ singleForm.errors.price }}
                         </span>
                       </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                      <div class="mb-3 add-product">
-                        <label class="form-label">Quantity Alert</label>
-                        <input
-                          type="number"
-                          class="form-control"
-                          v-model="singleForm.quantity_alert"
-                        />
-                        <span
-                          class="text-danger"
-                          v-if="singleForm.errors.quantity_alert"
-                          >{{ singleForm.errors.quantity_alert }}
-                        </span>
-                      </div>
-                    </div>
+
                     <div class="col-lg-3 col-sm-6 col-12">
                       <div class="mb-3 add-product">
                         <label class="form-label">Buying Price</label>
@@ -637,16 +640,66 @@ const submitForm = () => {
                         </span>
                       </div>
                     </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
+
+                    <div class="col-lg-2 col-sm-6 col-12">
                       <div class="mb-3 add-product">
-                        <label class="form-label">Price</label>
-                        <input
-                          type="number"
-                          class="form-control"
-                          v-model="singleForm.price"
-                        />
-                        <span class="text-danger" v-if="singleForm.errors.price"
-                          >{{ singleForm.errors.price }}
+                        <label class="form-label">Quantity</label>
+                        <div class="product-quantity">
+                          <a
+                            class="fw-bold text-dark fs-5 text-decoration-none"
+                            href="javascript:void(0)"
+                            @click="decrementQuantity(singleForm)"
+                          >
+                            -
+                          </a>
+                          <input
+                            type="number"
+                            class="quntity-input form-control"
+                            v-model="singleForm.quantity"
+                          />
+                          <a
+                            class="fw-bold text-dark fs-5 text-decoration-none"
+                            href="javascript:void(0)"
+                            @click="incrementQuantity(singleForm)"
+                          >
+                            +
+                          </a>
+                        </div>
+                        <span
+                          class="text-danger"
+                          v-if="singleForm.errors.quantity"
+                          >{{ singleForm.errors.quantity }}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-6 col-12">
+                      <div class="mb-3 add-product">
+                        <label class="form-label">Quantity Alert</label>
+                        <div class="product-quantity">
+                          <a
+                            class="fw-bold text-dark fs-5 text-decoration-none"
+                            href="javascript:void(0)"
+                            @click="decrementAlert(singleForm)"
+                          >
+                            -
+                          </a>
+                          <input
+                            type="number"
+                            class="quntity-input form-control"
+                            v-model="singleForm.quantity_alert"
+                          />
+                          <a
+                            class="fw-bold text-dark fs-5 text-decoration-none"
+                            href="javascript:void(0)"
+                            @click="incrementAlert(singleForm)"
+                          >
+                            +
+                          </a>
+                        </div>
+                        <span
+                          class="text-danger"
+                          v-if="singleForm.errors.quantity_alert"
+                          >{{ singleForm.errors.quantity_alert }}
                         </span>
                       </div>
                     </div>
@@ -661,7 +714,7 @@ const submitForm = () => {
                             <div class="col-lg-10 col-sm-10 col-10">
                               <VueMultiselect
                                 v-model="selectedVariant"
-                                :options="variants"
+                                :options="form.category_id ? variants : []"
                                 label="name"
                                 track-by="name"
                                 placeholder="Choose Variant"
@@ -683,37 +736,16 @@ const submitForm = () => {
                         <table class="table">
                           <thead>
                             <tr>
-                              <th>Variant</th>
-                              <th>Value</th>
                               <th>Price</th>
                               <th>Buying Price</th>
                               <th>Quantity</th>
                               <th>Quantity Alert</th>
+                              <th>Image</th>
                               <th class="no-sort">Action</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr v-for="(row, index) in rows" :key="index">
-                              <td>
-                                <div class="add-product">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    v-model="row.variant"
-                                    readonly
-                                  />
-                                </div>
-                              </td>
-                              <td>
-                                <div class="add-product">
-                                  <input
-                                    type="text"
-                                    class="form-control"
-                                    v-model="row.value"
-                                    readonly
-                                  />
-                                </div>
-                              </td>
                               <td>
                                 <div class="add-product">
                                   <input
@@ -778,6 +810,57 @@ const submitForm = () => {
                                   >
                                     +
                                   </a>
+                                </div>
+                              </td>
+                              <td>
+                                <div class="add-product d-flex gap-3">
+                                  <div class="image-upload-variant">
+                                    <input
+                                      class="form-control"
+                                      type="file"
+                                      multiple
+                                      @change="
+                                        handleVariantFileUpload($event, row)
+                                      "
+                                    />
+                                    <div class="image-upload-variants">
+                                      <i
+                                        data-feather="plus-circle"
+                                        class="plus-down-add me-0"
+                                      ></i>
+                                      <h4>Add Images</h4>
+                                    </div>
+                                  </div>
+
+                                  <div class="d-flex gap-2">
+                                    <div
+                                      class="phone-img position-relative"
+                                      v-for="(image, index) in row.images"
+                                      :key="index"
+                                    >
+                                      <img
+                                        :src="image.url"
+                                        alt="image"
+                                        class="object-fit-cover border"
+                                        style="width: 60px; height: 40px"
+                                      />
+                                      <span
+                                        class="text-danger"
+                                        v-if="form.errors['images.' + index]"
+                                        >{{ form.errors["images." + index] }}
+                                      </span>
+                                      <a
+                                        class="position-absolute top-0 end-0"
+                                        href="javascript:void(0);"
+                                        @click="removeVariantImage(index, row)"
+                                      >
+                                        <vue-feather
+                                          type="x"
+                                          class="x-square-add remove-product"
+                                        ></vue-feather>
+                                      </a>
+                                    </div>
+                                  </div>
                                 </div>
                               </td>
                               <td class="action-table-data">

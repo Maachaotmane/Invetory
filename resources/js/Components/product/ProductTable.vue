@@ -41,16 +41,24 @@
                     :src="`/storage/${record.images[0].name}`"
                     alt=""
                   />
-                  <img
-                    v-else
-                    src="/Assets/img/default-product.png"
-                    alt=""
-                  />
+                  <img v-else src="/Assets/img/default-product.png" alt="" />
                 </a>
                 <a href="javascript:void(0);" class="text-decoration-none">{{
                   record.name
                 }}</a>
               </div>
+            </template>
+            <template v-else-if="column.key === 'Gender'">
+              <td class="userimgname">
+                <span
+                  :class="[
+                    'badge',
+                    record.Gender ? 'badge-warning' : 'badge-success',
+                  ]"
+                >
+                  {{ record.Gender ? "variant" : "single" }}
+                </span>
+              </td>
             </template>
             <template v-else-if="column.key === 'CreatedBy'">
               <td class="userimgname">
@@ -127,6 +135,8 @@ export default {
         Price: product.variants[0]?.price || "N/A",
         Unit: product.unit?.name || "N/A",
         Qty: product.variants[0]?.quantity || "N/A",
+        Qty_Alert: product.variants[0]?.quantity_alert || "N/A",
+        Gender: product.variants[0]?.variant,
         CreatedBy: product.user?.name,
         images: product.images,
       }));
@@ -136,11 +146,16 @@ export default {
       return tableData.value.filter((item) =>
         Object.values(item).some((val) =>
           String(val).toLowerCase().includes(searchQuery.value.toLowerCase())
-      ))
+        )
+      );
     });
 
     const handleTableChange = (pag) => {
-      router.get(props.products.path, { page: pag.current }, { preserveState: true });
+      router.get(
+        props.products.path,
+        { page: pag.current },
+        { preserveState: true }
+      );
     };
 
     const showConfirmation = (routeName, id) => {
@@ -219,6 +234,17 @@ export default {
           title: "Qty",
           dataIndex: "Qty",
           sorter: (a, b) => a.Qty.localeCompare(b.Qty),
+        },
+        {
+          title: "Qty Alert",
+          dataIndex: "Qty_Alert",
+          sorter: (a, b) => a.Qty_Alert.localeCompare(b.Qty_Alert),
+        },
+        {
+          title: "Gender",
+          dataIndex: "Gender",
+          key: "Gender",
+          sorter: (a, b) => a.Gender.localeCompare(b.Gender),
         },
         {
           title: "Created by",

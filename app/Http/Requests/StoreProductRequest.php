@@ -34,6 +34,7 @@ class StoreProductRequest extends FormRequest
             'variants.*.quantity_alert' => 'nullable|numeric|min:0',
             'variants.*.price'          => 'nullable|numeric|min:0',
             'variants.*.buying_price'   => 'nullable|numeric|min:0',
+            'variants.*.images'          => 'nullable|array',
         ];
     }
 
@@ -55,6 +56,7 @@ class StoreProductRequest extends FormRequest
                     'quantity_alert' => $variant['quantity_alert'] ?? null,
                     'price' => $variant['price'] ?? null,
                     'buying_price' => $variant['buying_price'] ?? null,
+                    'images' => $variant['images'] ?? null
                 ];
             }, $variants);
 

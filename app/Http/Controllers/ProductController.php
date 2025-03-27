@@ -17,6 +17,8 @@ use Inertia\Response;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
+use App\Models\VariantImage;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -30,7 +32,7 @@ class ProductController extends Controller
                 $query->where('name', 'like', "%{$searchQuery}%")
                     ->orWhere('reference', 'like', "%{$searchQuery}%");
             })
-            ->paginate(2);
+            ->paginate(10);
 
         return Inertia::render('Product/ProductList', [
             'products' => $products,
@@ -97,7 +99,7 @@ class ProductController extends Controller
 
         if ($request->variants) {
             foreach ($request->variants as $variant) {
-                ProductVariant::create([
+                $productVariant = ProductVariant::create([
                     'product_id' => $product->id,
                     'variant' => $variant['variant'] ?? null,
                     'value' => $variant['value'] ?? null,
@@ -106,10 +108,36 @@ class ProductController extends Controller
                     'price' => !empty($variant['price']) ? $variant['price'] : 0,
                     'buying_price' => !empty($variant['buying_price']) ? $variant['buying_price'] : 0,
                 ]);
+
+                if ($variant['images']) {
+                    foreach ($variant['images'] as $image) {
+                        $path = $this->saveBase64Image($image['url']);
+                        VariantImage::create([
+                            'variant_id' => $productVariant->id,
+                            'name' => $path,
+                        ]);
+                    }
+                }
             }
         }
 
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+    }
+
+    function saveBase64Image($base64String, $folder = 'variant_images')
+    {
+        preg_match('/^data:image\/(\w+);base64,/', $base64String, $matches);
+        $extension = $matches[1] ?? 'png';
+
+        $base64Data = substr($base64String, strpos($base64String, ',') + 1);
+        $base64Data = base64_decode($base64Data);
+
+        $fileName = uniqid('image_') . '.' . $extension;
+        $filePath = $folder . '/' . $fileName;
+
+        Storage::disk('public')->put($filePath, $base64Data);
+
+        return $filePath;
     }
 
     public function destroy(int $id)

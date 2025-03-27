@@ -13572,6 +13572,53 @@ td .checkboxs .checkmarks::after {
   top: 3px;
 }
 
+
+.image-upload-variant {
+  border: 1px solid rgba(145, 158, 171, 0.32);
+  position: relative;
+  border-radius: 5px;
+}
+
+.image-upload-variant:hover {
+  background: #f3f6f9;
+}
+
+.image-upload-variant input[type=file] {
+  width: 100px;
+  opacity: 0;
+  height: 40px;
+  position: relative;
+  z-index: 9;
+  cursor: pointer;
+}
+
+.image-upload-variant .image-upload-variants {
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  position: absolute;
+  top: 0;
+}
+
+.img-x{
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  background: #FF0000;
+  border-radius: 3px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  -webkit-box-align: center;
+}
+
+.image-upload-variant .image-upload-variants h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #092C4C;
+}
+
 .image-upload {
   border: 1px solid rgba(145, 158, 171, 0.32);
   position: relative;
