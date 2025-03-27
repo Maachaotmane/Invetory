@@ -736,6 +736,7 @@ const submitForm = () => {
                         <table class="table">
                           <thead>
                             <tr>
+                              <th>Value</th>
                               <th>Price</th>
                               <th>Buying Price</th>
                               <th>Quantity</th>
@@ -746,6 +747,16 @@ const submitForm = () => {
                           </thead>
                           <tbody>
                             <tr v-for="(row, index) in rows" :key="index">
+                              <td>
+                                <div class="add-product">
+                                  <input
+                                    type="text"
+                                    class="form-control"
+                                    v-model="row.value"
+                                    readonly
+                                  />
+                                </div>
+                              </td>
                               <td>
                                 <div class="add-product">
                                   <input
