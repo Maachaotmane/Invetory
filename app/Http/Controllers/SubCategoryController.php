@@ -2,75 +2,59 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\SubCategory;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class SubCategoryController extends Controller
 {
-    // Display a listing of the resource.
-    public function index()
-    {
-        $subCategories = SubCategory::with('category')->get();
-        return Inertia::render('SubCategories/Index', ['subCategories' => $subCategories]);
-    }
-
-    // Show the form for creating a new resource.
-    public function create()
-    {
-        $categories = Category::all();
-        return Inertia::render('SubCategories/Create', ['categories' => $categories]);
-    }
-
-    // Store a newly created resource in storage.
     public function store(Request $request)
     {
-        $request->validate([
-            'category_id' => 'required|exists:categories,id',
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
-        SubCategory::create($request->all());
+        $subcategory = SubCategory::create($validated);
 
-        return redirect()->route('sub-categories.index')->with('success', 'SubCategory created successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Subcategory created successfully',
+            'data' => $subcategory->load('category')
+        ], 201);
     }
 
-    // Display the specified resource.
-    public function show($id)
+    public function update(Request $request, SubCategory $subCategory)
     {
-        $subCategory = SubCategory::with('category')->findOrFail($id);
-        return Inertia::render('SubCategories/Show', ['subCategory' => $subCategory]);
-    }
+        // Ensure we're updating a subcategory
+        if (!$subCategory->category_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'This is not a subcategory'
+            ], 422);
+        }
 
-    // Show the form for editing the specified resource.
-    public function edit($id)
-    {
-        $subCategory = SubCategory::findOrFail($id);
-        $categories = Category::all();
-        return Inertia::render('SubCategories/Edit', ['subCategory' => $subCategory, 'categories' => $categories]);
-    }
-
-    // Update the specified resource in storage.
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'category_id' => 'required|exists:categories,id',
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
         ]);
 
-        $subCategory = SubCategory::findOrFail($id);
-        $subCategory->update($request->all());
+        $subCategory->update($validated);
 
-        return redirect()->route('sub-categories.index')->with('success', 'SubCategory updated successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Subcategory updated successfully',
+            'data' => $subCategory->load('category')
+        ]);
     }
 
-    // Remove the specified resource from storage.
-    public function destroy($id)
+    public function destroy(SubCategory $subCategory)
     {
-        $subCategory = SubCategory::findOrFail($id);
         $subCategory->delete();
 
-        return redirect()->route('sub-categories.index')->with('success', 'SubCategory deleted successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Subcategory deleted successfully'
+        ]);
     }
 }

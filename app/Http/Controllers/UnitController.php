@@ -8,20 +8,6 @@ use Inertia\Inertia;
 
 class UnitController extends Controller
 {
-    // Display a listing of the resource.
-    public function index()
-    {
-        $units = Unit::all();
-        return Inertia::render('Units/Index', ['units' => $units]);
-    }
-
-    // Show the form for creating a new resource.
-    public function create()
-    {
-        return Inertia::render('Units/Create');
-    }
-
-    // Store a newly created resource in storage.
     public function store(Request $request)
     {
         $request->validate([
@@ -29,45 +15,39 @@ class UnitController extends Controller
             'name' => 'required|string|max:255',
         ]);
 
-        Unit::create($request->all());
+        $unit = Unit::create($request->all());
 
-        return redirect()->route('units.index')->with('success', 'Unit created successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Unit created successfully',
+            'data' => $unit
+        ], 201);
     }
 
-    // Display the specified resource.
-    public function show($id)
-    {
-        $unit = Unit::findOrFail($id);
-        return Inertia::render('Units/Show', ['unit' => $unit]);
-    }
-
-    // Show the form for editing the specified resource.
-    public function edit($id)
-    {
-        $unit = Unit::findOrFail($id);
-        return Inertia::render('Units/Edit', ['unit' => $unit]);
-    }
-
-    // Update the specified resource in storage.
-    public function update(Request $request, $id)
+    public function update(Request $request, Unit $unit)
     {
         $request->validate([
             'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
         ]);
 
-        $unit = Unit::findOrFail($id);
         $unit->update($request->all());
 
-        return redirect()->route('units.index')->with('success', 'Unit updated successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Unit updated successfully',
+            'data' => $unit
+        ]);
     }
 
     // Remove the specified resource from storage.
-    public function destroy($id)
+    public function destroy(Unit $unit)
     {
-        $unit = Unit::findOrFail($id);
         $unit->delete();
 
-        return redirect()->route('units.index')->with('success', 'Unit deleted successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Unit deleted successfully'
+        ]);
     }
 }

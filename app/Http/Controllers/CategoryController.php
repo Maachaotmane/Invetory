@@ -4,87 +4,84 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
-    // Display a listing of the resource.
     public function index()
     {
-        $categories = Category::all();
-        return Inertia::render('Categories/Index', ['categories' => $categories]);
+        // Get all categories with their subcategories
+        $categories = Category::with('subcategories')
+            ->get();
+        
+        return response()->json([
+            'success' => true,
+            'data' => $categories
+        ]);
     }
 
-    // Show the form for creating a new resource.
-    public function create()
-    {
-        return Inertia::render('Categories/Create');
-    }
-
-    // Store a newly created resource in storage.
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'x_axis' => 'nullable|string',
+            'y_axis' => 'nullable|string',
+            'description' => 'nullable|string',
         ]);
 
-        Category::create($request->all());
+        $category = Category::create($validated);
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Category created successfully',
+            'data' => $category
+        ], 201);
     }
 
-    // Display the specified resource.
-    public function show($id)
+    public function update(Request $request, Category $category)
     {
-        $category = Category::findOrFail($id);
-        return Inertia::render('Categories/Show', ['category' => $category]);
-    }
-
-    // Show the form for editing the specified resource.
-    public function edit($id)
-    {
-        $category = Category::findOrFail($id);
-        return Inertia::render('Categories/Edit', ['category' => $category]);
-    }
-
-    // Update the specified resource in storage.
-    public function update(Request $request, $id)
-    {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
+            'x_axis' => 'nullable|string',
+            'y_axis' => 'nullable|string',
+            'description' => 'nullable|string',
         ]);
 
-        $category = Category::findOrFail($id);
-        $category->update($request->all());
+        $category->update($validated);
 
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Category updated successfully',
+            'data' => $category
+        ]);
     }
 
-    // Remove the specified resource from storage.
-    public function destroy($id)
+    public function destroy(Category $category)
     {
-        $category = Category::findOrFail($id);
+        // Prevent deletion if category has subcategories
+        if ($category->subcategories()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cannot delete category with existing subcategories'
+            ], 422);
+        }
+
         $category->delete();
 
-        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Category deleted successfully'
+        ]);
     }
 
-    public function getRelatedData($categoryId)
+    //related data for category
+    public function categoriesRelatedData()
     {
-        // Find the category or return a 404 error if not found
-        $category = Category::findOrFail($categoryId);
+        $categories = Category::with('brands', 'units', 'types', 'measures', 'subCategories')
+            ->get();
 
-        // Load all related data
-        $relatedData = [
-            'category' => $category,
-            'sub_categories' => $category->subCategories,
-            'types' => $category->types,
-            'measures' => $category->measures,
-            'units' => $category->units,
-            'brands' => $category->brands,
-        ];
-
-        // Return the data as a JSON response
-        return response()->json($relatedData);
+        return response()->json([
+            'success' => true,
+            'data' => $categories
+        ]);
     }
 }

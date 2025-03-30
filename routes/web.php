@@ -54,12 +54,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/stock-stat', [StockStatsController::class, 'index'])->name('stock-stat.index');
     Route::get('/products', [ProductController::class, 'index'])->name('products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-    Route::resource('categories', CategoryController::class);
-    Route::resource('sub-categories', SubCategoryController::class);
-    Route::resource('types', TypeController::class);
-    Route::resource('measures', MeasureController::class);
-    Route::resource('units', UnitController::class);
-    Route::resource('brands', BrandController::class);
+    // Route::resource('categories', CategoryController::class);
+    // Route::resource('sub-categories', SubCategoryController::class);
     Route::post('/product/store', [ProductController::class, 'store'])->name('products.store');
     Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
     Route::get('/categories/{category}/related', [CategoryController::class, 'getRelatedData']);
