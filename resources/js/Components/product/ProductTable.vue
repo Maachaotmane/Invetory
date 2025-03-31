@@ -60,13 +60,7 @@
                 </span>
               </td>
             </template>
-            <template v-else-if="column.key === 'CreatedBy'">
-              <td class="userimgname">
-                <a href="javascript:void(0);" class="text-decoration-none">{{
-                  record.CreatedBy
-                }}</a>
-              </td>
-            </template>
+  
             <template v-else-if="column.key === 'action'">
               <td class="action-table-data">
                 <div class="edit-delete-action">
@@ -137,7 +131,6 @@ export default {
         Qty: product.variants[0]?.quantity || "N/A",
         Qty_Alert: product.variants[0]?.quantity_alert || "N/A",
         Gender: product.variants[0]?.variant,
-        CreatedBy: product.user?.name,
         images: product.images,
       }));
     });
@@ -245,12 +238,6 @@ export default {
           dataIndex: "Gender",
           key: "Gender",
           sorter: (a, b) => a.Gender.localeCompare(b.Gender),
-        },
-        {
-          title: "Created by",
-          dataIndex: "CreatedBy",
-          key: "CreatedBy",
-          sorter: (a, b) => a.CreatedBy.localeCompare(b.CreatedBy),
         },
         { title: "Action", key: "action", sorter: true },
       ],
