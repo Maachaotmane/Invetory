@@ -11,7 +11,7 @@ class Product extends Model
 
     protected $fillable = [
         'category_id', 'fournisseur_id', 'unit_id', 'brand_id', 'type_id',
-        'measure_id', 'sub_category_id', 'store_id', 'created_by', 'reference', 'name', 'description'
+        'measure_id', 'sub_category_id', 'store_id', 'created_by', 'reference', 'name', 'description', 'sub_measure_id'
     ];
 
     public function category()
@@ -47,6 +47,12 @@ class Product extends Model
     public function subCategory()
     {
         return $this->belongsTo(SubCategory::class);
+    }
+
+
+    public function subMeasure()
+    {
+        return $this->belongsTo(SubMeasure::class);
     }
 
     public function store()

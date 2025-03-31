@@ -17,6 +17,7 @@ use Inertia\Response;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\ProductVariant;
+use App\Models\SubMeasure;
 use App\Models\VariantImage;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,7 +28,7 @@ class ProductController extends Controller
         $searchQuery = $request->input('search');
 
         $products = Product::query()
-            ->with(['fournisseur', 'category', 'subCategory', 'images', 'variants', 'unit', 'brand', 'type', 'measure', 'user'])
+            ->with(['fournisseur', 'category', 'subCategory', 'images', 'variants', 'unit', 'brand', 'type', 'measure', 'subMeasure', 'user'])
             ->when($searchQuery, function ($query, $searchQuery) {
                 $query->where('name', 'like', "%{$searchQuery}%")
                     ->orWhere('reference', 'like', "%{$searchQuery}%");
@@ -60,19 +61,20 @@ class ProductController extends Controller
         $types = Type::query()->where('category_id', $id)->get();
         $measures = Measure::query()->where('category_id', $id)->get();
         $subCategories = SubCategory::query()->where('category_id', $id)->get();
+        $subMeasures = SubMeasure::query()->where('category_id', $id)->get();
 
         return response()->json([
             'units' => $units,
             'brands' => $brands,
             'types' => $types,
             'measures' => $measures,
-            'subCategories' => $subCategories
+            'subCategories' => $subCategories,
+            'subMeasures' => $subMeasures
         ]);
     }
 
     public function store(StoreProductRequest $request)
     {
-
         $product = Product::create([
             'category_id'      => $request->category_id,
             'fournisseur_id'   => $request->fournisseur_id,
@@ -81,6 +83,7 @@ class ProductController extends Controller
             'type_id'          => $request->type_id,
             'measure_id'       => $request->measure_id,
             'sub_category_id'  => $request->sub_category_id,
+            'sub_measure_id'   => $request->sub_measure_id,
             'name'             => $request->name,
             'reference'        => $request->reference,
             'description'      => $request->description,
