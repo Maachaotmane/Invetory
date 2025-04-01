@@ -7,7 +7,7 @@
     <div class="page-wrapper">
         <div class="content">
             <ProductListHeader />
-            <ProductTable :products="products" />
+            <ProductTable :products="products" :categories="categories" />
         </div>
     </div>
 </template>
@@ -21,5 +21,6 @@ import ProductTable from '@/Components/product/ProductTable.vue';
 
 defineProps({
     products: Object,
+    categories: Array,
 });
 </script>

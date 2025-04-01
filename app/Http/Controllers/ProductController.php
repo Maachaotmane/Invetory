@@ -26,6 +26,13 @@ class ProductController extends Controller
     public function index(Request $request): Response
     {
         $searchQuery = $request->input('search');
+        $brandId = $request->input('brand_id');
+        $typeId = $request->input('type_id');
+        $unitId = $request->input('unit_id');
+        $categoryId = $request->input('category_id');
+        $subCategoryId = $request->input('sub_category_id');
+        $measureId = $request->input('measure_id');
+        $subMeasureId = $request->input('sub_measure_id');
 
         $products = Product::query()
             ->with(['fournisseur', 'category', 'subCategory', 'images', 'variants', 'unit', 'brand', 'type', 'measure', 'subMeasure', 'user'])
@@ -33,15 +40,24 @@ class ProductController extends Controller
                 $query->where('name', 'like', "%{$searchQuery}%")
                     ->orWhere('reference', 'like', "%{$searchQuery}%");
             })
+            ->when($brandId, fn($query) => $query->where('brand_id', $brandId))
+            ->when($typeId, fn($query) => $query->where('type_id', $typeId))
+            ->when($unitId, fn($query) => $query->where('unit_id', $unitId))
+            ->when($categoryId, fn($query) => $query->where('category_id', $categoryId))
+            ->when($subCategoryId, fn($query) => $query->where('sub_category_id', $subCategoryId))
+            ->when($measureId, fn($query) => $query->where('measure_id', $measureId))
+            ->when($subMeasureId, fn($query) => $query->where('sub_measure_id', $subMeasureId))
             ->paginate(10);
 
         return Inertia::render('Product/ProductList', [
             'products' => $products,
-            'filters' => $request->only(['search']),
+            'categories' => Category::all(),
+            'filters' => $request->only(['search', 'brand_id', 'type_id', 'category_id', 'sub_category_id', 'measure_id', 'sub_measure_id']),
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);
     }
+
 
     public function create(): Response
     {
