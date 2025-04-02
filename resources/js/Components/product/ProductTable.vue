@@ -15,13 +15,8 @@
             </a>
           </div>
         </div>
-        <div class="form-sort cursor-pointer" @click="showFilter = !showFilter">
-          <vue-feather type="sliders" class="info-img"></vue-feather>
-          <vue-select
-            :options="Sortby"
-            id="sortby"
-            placeholder="Sort by Date"
-          />
+        <div class="form-sort">
+          <vue-feather type="sliders" class="info-img cursor-pointer"  @click="showFilter = !showFilter"></vue-feather>
         </div>
       </div>
 

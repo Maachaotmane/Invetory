@@ -58,6 +58,14 @@ class ProductController extends Controller
         ]);
     }
 
+    public function view(int $id): Response
+    {
+        $product = Product::with(['fournisseur', 'category', 'subCategory', 'images', 'variants', 'unit', 'brand', 'type', 'measure', 'subMeasure', 'user'])->find($id);
+        return Inertia::render('Product/ProductDetail', [
+            'product' => $product,
+        ]);
+    }
+
 
     public function create(): Response
     {
