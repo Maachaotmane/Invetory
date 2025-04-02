@@ -16,7 +16,11 @@
           </div>
         </div>
         <div class="form-sort">
-          <vue-feather type="sliders" class="info-img cursor-pointer"  @click="showFilter = !showFilter"></vue-feather>
+          <vue-feather
+            type="sliders"
+            class="info-img cursor-pointer"
+            @click="showFilter = !showFilter"
+          ></vue-feather>
         </div>
       </div>
 
@@ -84,7 +88,13 @@
 
         <div class="col-lg-2 col-sm-6 col-12 page-btn">
           <div class="col-lg-6 col-sm-6 col-12 page-btn">
-            <a href="javascript:void(0);" class="project-btn" @click="filterQueries"> Search </a>
+            <a
+              href="javascript:void(0);"
+              class="project-btn"
+              @click="filterQueries"
+            >
+              Search
+            </a>
           </div>
         </div>
       </div>
@@ -129,15 +139,13 @@
             <template v-else-if="column.key === 'action'">
               <td class="action-table-data">
                 <div class="edit-delete-action">
-                  <a
+                  <Link
+                    :href="`/product-detail/${record.id}`"
+                    method="get"
                     class="me-2 p-2"
-                    href="javascript:void(0);"
-                    data-bs-toggle="modal"
-                    data-bs-target="#update-client"
-                    @click="setClientToUpdate(record)"
                   >
                     <VueFeather type="eye" class="feather-eye" />
-                  </a>
+                  </Link>
                   <a
                     class="me-2 p-2"
                     href="javascript:void(0);"
@@ -168,7 +176,7 @@
 import { ref, computed, watch, defineProps } from "vue";
 import Swal from "sweetalert2";
 import VueFeather from "vue-feather";
-import { router } from "@inertiajs/vue3";
+import { Link, router } from "@inertiajs/vue3";
 import { useForm } from "@inertiajs/vue3";
 import VueMultiselect from "vue-multiselect";
 import apiClient from "@/api";

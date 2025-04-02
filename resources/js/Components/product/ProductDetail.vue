@@ -6,9 +6,17 @@
           <h4>Product Details</h4>
           <h6>Full details of a product</h6>
         </div>
+
+        <button
+          @click="goBack"
+          class="project-btn bg-secondary border-secondary"
+        >
+          <vue-feather type="arrow-left" class="me-2"></vue-feather> Back to
+          Product
+        </button>
       </div>
       <div class="row">
-        <h5>Product Info</h5>
+        <h5>Product Informations</h5>
         <div class="col-lg-8 col-sm-12">
           <div class="card">
             <div class="card-body">
@@ -126,8 +134,7 @@
         </div>
       </div>
 
-      <h5>Product Pricing && Quantity</h5>
-
+      <h5>Product Pricing & Quantity</h5>
       <div class="card">
         <div class="card-body">
           <div class="modal-body-table table-responsive custom-modal-body">
@@ -135,6 +142,7 @@
               <table class="table">
                 <thead>
                   <tr>
+                    <th v-if="product.variants[0]?.value">Variant</th>
                     <th v-if="product.variants[0]?.value">Value</th>
                     <th>Price</th>
                     <th>Buying Price</th>
@@ -144,6 +152,11 @@
                 </thead>
                 <tbody>
                   <tr v-for="(row, index) in product.variants" :key="index">
+                    <td v-if="product.variants[0]?.value">
+                      <div class="add-product">
+                        {{ row.variant }}
+                      </div>
+                    </td>
                     <td v-if="product.variants[0]?.value">
                       <div class="add-product">
                         {{ row.value }}
@@ -183,4 +196,8 @@
 const props = defineProps({
   product: Object,
 });
+
+const goBack = () => {
+  window.history.back();
+};
 </script>
