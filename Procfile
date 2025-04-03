@@ -1,1 +1,1 @@
-web: php artisan serve --host=0.0.0.0 --port=5173
+web: php artisan serve --host=0.0.0.0 --port=8000
