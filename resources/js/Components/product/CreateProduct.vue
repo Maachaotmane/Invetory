@@ -17,6 +17,7 @@ const form = useForm({
   type_id: null,
   measure_id: null,
   sub_category_id: null,
+  sub_measure_id: null,
   reference: null,
   description: null,
   name: null,
@@ -37,6 +38,7 @@ const brands = ref([]);
 const types = ref([]);
 const measures = ref([]);
 const subCategories = ref([]);
+const subMeasures = ref([]);
 const loading = ref(false);
 const error = ref("");
 const images = ref([]);
@@ -144,6 +146,7 @@ const generateUUID = (e) => {
 const fetchRelatedData = async () => {
   form.brand_id = null;
   form.sub_category_id = null;
+  form.sub_measure_id = null;
   form.measure_id = null;
   form.unit_id = null;
   form.type_id = null;
@@ -154,6 +157,7 @@ const fetchRelatedData = async () => {
     types.value = [];
     measures.value = [];
     subCategories.value = [];
+    subMeasures.value = [];
     return;
   }
 
@@ -170,6 +174,7 @@ const fetchRelatedData = async () => {
     types.value = response.data.types;
     measures.value = response.data.measures;
     subCategories.value = response.data.subCategories;
+    subMeasures.value = response.data.subMeasures;
   } catch (err) {
     error.value = "Failed to fetch data. Please try again.";
     console.error(err);
@@ -190,6 +195,7 @@ const submitForm = () => {
       formData.append("type_id", data.type_id?.id || "");
       formData.append("measure_id", data.measure_id?.id || "");
       formData.append("sub_category_id", data.sub_category_id?.id || "");
+      formData.append("sub_measure_id", data.sub_measure_id?.id || "");
       formData.append("reference", data.reference || "");
       formData.append("name", data.name || "");
       formData.append("description", data.description || "");
@@ -470,6 +476,36 @@ const submitForm = () => {
                       />
                       <span class="text-danger" v-if="form.errors.measure_id"
                         >{{ form.errors.measure_id }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="col-lg-4 col-sm-6 col-12">
+                    <div class="mb-3 add-product">
+                      <div class="add-newplus">
+                        <label class="form-label">Sub Measure</label>
+                        <a
+                          href="javascript:void(0);"
+                          data-bs-toggle="modal"
+                          data-bs-target="#add-units-category"
+                          class="text-secondary text-decoration-none"
+                          ><vue-feather
+                            type="plus-circle"
+                            class="plus-down-add"
+                          ></vue-feather
+                          ><span>Add New</span></a
+                        >
+                      </div>
+                      <VueMultiselect
+                        v-model="form.sub_measure_id"
+                        :options="subMeasures"
+                        label="name"
+                        track-by="id"
+                        placeholder="Choose sub category"
+                      />
+                      <span
+                        class="text-danger"
+                        v-if="form.errors.sub_measure_id"
+                        >{{ form.errors.sub_measure_id }}
                       </span>
                     </div>
                   </div>

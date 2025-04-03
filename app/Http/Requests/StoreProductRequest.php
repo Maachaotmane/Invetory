@@ -21,6 +21,7 @@ class StoreProductRequest extends FormRequest
             'type_id'          => 'nullable|exists:types,id',
             'measure_id'       => 'nullable|exists:measures,id',
             'sub_category_id'  => 'nullable|exists:sub_categories,id',
+            'sub_measure_id'   => 'nullable|exists:sub_measures,id',
             'store_id'         => 'nullable|exists:stores,id',
             'reference'        => 'required|string|unique:products,reference',
             'name'             => 'required|string|max:255',
