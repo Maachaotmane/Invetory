@@ -17,7 +17,8 @@ class ClientController extends Controller
         if ($request->has('searchClient')) {
             $search = $request->input('searchClient');
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                  ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('C_I_N', 'like', "%{$search}%");
         }
 
         $clients = $query->paginate(10);

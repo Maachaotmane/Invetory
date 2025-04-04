@@ -18,7 +18,7 @@ class FournisseurController extends Controller
             $search = $request->input('searchFournisseur');
             $query->where('name', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                  ->orWhere('C_I_N', 'like', "%{$search}%");
 
         }
 
@@ -34,7 +34,8 @@ class FournisseurController extends Controller
         if ($request->has('searchFournisseur')) {
             $search = $request->input('searchFournisseur');
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                  ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('C_I_N', 'like', "%{$search}%");
         }
 
         $fournisseurs = $query->get();
