@@ -146,7 +146,7 @@
                   >
                     <VueFeather type="eye" class="feather-eye" />
                   </Link>
-                  <a
+                  <!-- <a
                     class="me-2 p-2"
                     href="javascript:void(0);"
                     data-bs-toggle="modal"
@@ -154,7 +154,7 @@
                     @click="setClientToUpdate(record)"
                   >
                     <VueFeather type="edit" class="feather-edit" />
-                  </a>
+                  </a> -->
                   <a
                     class="confirm-text p-2"
                     @click="showConfirmation('products.destroy', record.id)"
