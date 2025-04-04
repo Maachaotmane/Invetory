@@ -25,11 +25,17 @@ class SubCategoryController extends Controller
 
     public function update(Request $request, SubCategory $subCategory)
     {
+        $subCategory = SubCategory::find($request->id);
+        if (!$subCategory) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Subcategory not found'
+            ], 404);
+        }
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
         ]);
-
         $subCategory->update($request->all());
 
         return response()->json([
@@ -39,8 +45,16 @@ class SubCategoryController extends Controller
         ]);
     }
 
-    public function destroy(SubCategory $subCategory)
+    public function destroy(int $id)
     {
+        $subCategory = SubCategory::find($id);
+        if (!$subCategory) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Subcategory not found'
+            ], 404);
+        }
+        // Check if the subcategory is used in any products
         $subCategory->delete();
 
         return response()->json([

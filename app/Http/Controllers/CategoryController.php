@@ -76,7 +76,7 @@ class CategoryController extends Controller
     //related data for category
     public function categoriesRelatedData()
     {
-        $categories = Category::with('brands', 'units', 'types', 'measures', 'subCategories', 'subMeasures')
+        $categories = Category::with('brands', 'units', 'types', 'measures', 'subCategories', 'sub_measures')
             ->get();
 
         return response()->json([
