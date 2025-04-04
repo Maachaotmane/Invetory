@@ -63,6 +63,7 @@
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Reference</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Measure</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sub Measure</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Unit</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Brand</th>
               <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
@@ -76,17 +77,21 @@
               <td class="px-6 py-4 whitespace-nowrap">{{ product.reference }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ product.category }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ product.measure }}</td>
+              <td class="px-6 py-4 whitespace-nowrap">{{ product.subMeasure }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ product.unit }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ product.brand }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ product.type }}</td>
               <td class="px-6 py-4 whitespace-nowrap">{{ product.quantity }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
-                <button 
-                  @click="viewProduct(product)"
-                  class="text-blue-600 hover:text-blue-800 hover:underline"
-                >
-                  View
-                </button>
+                <Link
+                    :href="`/product-detail/${product.id}`"
+                    method="get"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="me-2 p-2"
+                  >
+                    <VueFeather type="eye" class="feather-eye" />
+                  </Link>
               </td>
             </tr>
           </tbody>
@@ -109,6 +114,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import Modal from '@/Components/Modal.vue';
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps({
   category: {

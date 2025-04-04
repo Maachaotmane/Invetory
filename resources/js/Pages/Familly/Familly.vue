@@ -35,7 +35,6 @@
             :key="category.id"
             :category="category"
             :depth="0"
-            @add-subcategory="openAddCategoryModal"
             @edit-category="openEditCategoryModal"
             @delete-category="confirmDelete"
             @add-attribute="openAddAttributeModal"
@@ -94,6 +93,15 @@
                 >
               </div>
 
+              <div v-if="!categoryForm.category_id" class="mb-3">
+                <label class="form-label">Quantity Alert</label>
+                <input 
+                  type="text" 
+                  class="form-control" 
+                  v-model="categoryForm.quantity_alert" 
+                >
+              </div>
+
                 <div v-if="!categoryForm.category_id" class="mb-3">
                 <label class="form-label">X Axis</label>
                 <select class="form-select" v-model="categoryForm.x_axis">
@@ -102,6 +110,7 @@
                   <option value="units">Units</option>
                   <option value="brands">Brands</option>
                   <option value="types">Types</option>
+                  <option value="sub_measures">Sub Measures</option>
                 </select>
                 </div>
                 
@@ -113,6 +122,7 @@
                   <option value="units">Units</option>
                   <option value="brands">Brands</option>
                   <option value="types">Types</option>
+                  <option value="sub_measures">Sub Measures</option>
                 </select>
                 </div>
               <div class="text-end">
@@ -226,6 +236,7 @@ const categoryForm = ref({
   name: '',
   x_axis: null,
   y_axis: null,
+  quantity_alert: null,
   category_id: null
 });
 
@@ -354,6 +365,7 @@ const openAddCategoryModal = (parentCategory) => {
     name: '',
     x_axis: null,
     y_axis: null,
+    quantity_alert: null,
     category_id: parentCategory ? parentCategory.id : null
   };
   categoryModal.show();
@@ -368,9 +380,9 @@ const openEditCategoryModal = (category) => {
 const saveCategory = async () => {
   saving.value = true;
   try {
-    const url = categoryForm.value.category_id 
-      ? `/api/subcategories/${isEditingCategory.value ? categoryForm.value.id : ''}`
-      : `/api/categories/${isEditingCategory.value ? categoryForm.value.id : ''}`;
+    const url = isEditingCategory.value 
+      ? `/api/categories/${categoryForm.value.id}` 
+      : '/api/categories';
     const method = isEditingCategory.value ? 'put' : 'post';
     
     const { data } = await axios[method](url, categoryForm.value);

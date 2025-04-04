@@ -7,7 +7,6 @@ import CategoryMatrix from '@/Components/utils/CategoryMatrix.vue';
 
 const props = defineProps({
     categories: Array,
-    axis_options: Object
 });
 
 

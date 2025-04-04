@@ -16,6 +16,13 @@ class Client extends Model
         'total_due_amount', 
         'city', 
         'country', 
-        'created_by'
+        'created_by',
+        'I_F',
+        'R_C',
+        'I_C_E',
+        'C_N_S_S',
+        'C_I_N',
+        'profile_image',
+        'C_I_N_image'
     ];
 }

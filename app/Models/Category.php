@@ -9,7 +9,7 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'x_axis', 'y_axis'];
+    protected $fillable = ['name', 'x_axis', 'y_axis', 'quantity_alert'];
 
     protected $casts = [
         'x_axis' => 'string',
@@ -21,6 +21,7 @@ class Category extends Model
         'units' => 'Units', 
         'brands' => 'Brands',
         'types' => 'Types',
+        'sub_measures' => 'Sub Measures',
     ];
 
     public function subCategories()
@@ -36,6 +37,11 @@ class Category extends Model
     public function measures()
     {
         return $this->hasMany(Measure::class);
+    }
+
+    public function sub_measures()
+    {
+        return $this->hasMany(SubMeasure::class);
     }
 
     public function units()

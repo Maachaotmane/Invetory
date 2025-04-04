@@ -47,6 +47,7 @@ const variants = [
   { name: "measure", arr: measures },
   { name: "unit", arr: units },
   { name: "brand", arr: brands },
+  { name: "sub measure", arr: subMeasures },
 ];
 const selectedPricing = ref("single");
 const selectedVariant = ref("");

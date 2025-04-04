@@ -5,7 +5,9 @@ namespace Database\Seeders;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Measure;
+use App\Models\Store;
 use App\Models\SubCategory;
+use App\Models\SubMeasure;
 use App\Models\Type;
 use App\Models\Unit;
 use Illuminate\Database\Seeder;
@@ -16,6 +18,9 @@ class CategoryRelatedDataSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
+
+        // create 5 stores
+        Store::factory(5)->create();
 
         // Create 5 categories
         Category::factory(5)->create()->each(function ($category) use ($faker) {
@@ -48,8 +53,13 @@ class CategoryRelatedDataSeeder extends Seeder
                 'category_id' => $category->id,
                 'name' => $faker->unique()->company,
             ]);
+
+            SubMeasure::factory(3)->create([
+                'category_id' => $category->id,
+                'name' => $faker->unique()->word,
+            ]);
         });
 
-        $this->command->info('Successfully seeded categories with related data!');
+        $this->command->info('Successfully seeded store and categories with related data!');
     }
 }

@@ -14,6 +14,9 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('x_axis')->nullable();
+            $table->string('y_axis')->nullable();
+            $table->integer('quantity_alert')->nullable();
             $table->timestamps();
         });
     }

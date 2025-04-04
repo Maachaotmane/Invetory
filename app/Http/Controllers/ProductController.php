@@ -148,7 +148,7 @@ class ProductController extends Controller
             }
         }
 
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+        return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
 
     function saveBase64Image($base64String, $folder = 'variant_images')

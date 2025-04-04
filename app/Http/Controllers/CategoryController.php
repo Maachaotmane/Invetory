@@ -9,8 +9,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        // Get all categories with their subcategories
-        $categories = Category::with('subcategories')
+        $categories = Category::with('subCategories')
             ->get();
         
         return response()->json([
@@ -25,6 +24,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'x_axis' => 'nullable|string',
             'y_axis' => 'nullable|string',
+            'quantity_alert' => 'nullable|integer',
             'description' => 'nullable|string',
         ]);
 
@@ -43,6 +43,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'x_axis' => 'nullable|string',
             'y_axis' => 'nullable|string',
+            'quantity_alert' => 'nullable|integer',
             'description' => 'nullable|string',
         ]);
 
@@ -57,8 +58,7 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        // Prevent deletion if category has subcategories
-        if ($category->subcategories()->exists()) {
+        if ($category->subCategories()->exists()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Cannot delete category with existing subcategories'
@@ -76,7 +76,7 @@ class CategoryController extends Controller
     //related data for category
     public function categoriesRelatedData()
     {
-        $categories = Category::with('brands', 'units', 'types', 'measures', 'subCategories')
+        $categories = Category::with('brands', 'units', 'types', 'measures', 'subCategories', 'sub_measures')
             ->get();
 
         return response()->json([

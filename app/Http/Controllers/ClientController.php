@@ -17,7 +17,8 @@ class ClientController extends Controller
         if ($request->has('searchClient')) {
             $search = $request->input('searchClient');
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                  ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('C_I_N', 'like', "%{$search}%");
         }
 
         $clients = $query->paginate(10);
@@ -35,7 +36,8 @@ class ClientController extends Controller
         if ($request->has('searchClient')) {
             $search = $request->input('searchClient');
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                  ->orWhere('email', 'like', "%{$search}%")
+                 ->orWhere('C_I_N', 'like', "%{$search}%");
         }
 
         $clients = $query->orderByRaw('COALESCE(credit_limit, 0) - COALESCE(total_due_amount, 0) asc')->get();
@@ -65,6 +67,13 @@ class ClientController extends Controller
             'country' => 'nullable|string|max:255',
             'credit_limit' => 'nullable|numeric',
             'total_due_amount' => 'nullable|numeric',
+            'I_F' => 'nullable|string|max:255',
+            'R_C' => 'nullable|string|max:255',
+            'I_C_E' => 'nullable|string|max:255',
+            'C_N_S_S' => 'nullable|string|max:255',
+            'C_I_N' => 'nullable|string|max:255',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'C_I_N_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $validatedData['created_by'] = auth()->user()->id;
@@ -108,6 +117,13 @@ class ClientController extends Controller
             'created_by' => 'required|exists:users,id',
             'credit_limit' => 'nullable|numeric',
             'total_due_amount' => 'nullable|numeric',
+            'I_F' => 'nullable|string|max:255',
+            'R_C' => 'nullable|string|max:255',
+            'I_C_E' => 'nullable|string|max:255',
+            'C_N_S_S' => 'nullable|string|max:255',
+            'C_I_N' => 'nullable|string|max:255',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'C_I_N_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $client->update($validatedData);
