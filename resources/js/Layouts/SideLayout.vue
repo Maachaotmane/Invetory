@@ -2,6 +2,20 @@
   <div class="sidebar overflow-auto" id="sidebar">
     <div id="sidebar-menu" class="sidebar-menu">
       <ul class="mt-3 submenu-ul">
+        <h4 class="submenu-hdr fs-6">Home</h4>
+        <li class="submenu-li">
+          <Link href="/" class="side-links"><i data-name="speaker" data-tags="audio,music" data-type="speaker"
+            class="vue-feather vue-feather--speaker"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round" class="feather feather-grid vue-feather__content">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg></i><span>Listes des clients</span></Link>
+        </li>
+      </ul>
+      <ul class="mt-3 submenu-ul">
         <h4 class="submenu-hdr fs-6">Articles</h4>
         <li class="submenu-li">
           <Link href="/products" class="side-links"><i data-name="grid" data-tags="" data-type="grid"
