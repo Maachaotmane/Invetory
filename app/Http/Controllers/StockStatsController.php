@@ -52,6 +52,7 @@ class StockStatsController extends Controller
                     'id' => $product->id,
                     'name' => $product->name,
                     'measure_id' => $product->measure_id,
+                    'sub_measure_id' => $product->sub_measure_id,
                     'unit_id' => $product->unit_id,
                     'brand_id' => $product->brand_id,
                     'type_id' => $product->type_id,
@@ -63,6 +64,7 @@ class StockStatsController extends Controller
                     'unit' => $product->unit ? $product->unit->name : "--",
                     'brand' => $product->brand ? $product->brand->name : "--",
                     'type' => $product->type ? $product->type->name : "--",
+                    'sub_measure' => $product->subMeasure ? $product->subMeasure->name : "--",
                 ];
             }),
             'product_count' => $category->products->count(),
@@ -71,12 +73,6 @@ class StockStatsController extends Controller
 
     return Inertia::render('Stock/Etat', [
         'categories' => $categories,
-        'axis_options' => [
-            'measures' => 'Measures',
-            'units' => 'Units',
-            'brands' => 'Brands',
-            'types' => 'Types'
-        ]
     ]);
 }
 }
