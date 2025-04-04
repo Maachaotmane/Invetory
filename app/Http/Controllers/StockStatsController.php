@@ -15,13 +15,19 @@ class StockStatsController extends Controller
         'units', 
         'brands', 
         'types',
+        'sub_measures',
         'products.measure',
         'products.unit',
         'products.brand',
-        'products.type'
+        'products.type',
+        'products.subMeasure',
     ])
     ->whereNotNull('x_axis')
     ->whereNotNull('y_axis')
+    ->where(function ($query) {
+        $query->whereNotNull('x_axis')
+              ->whereNotNull('y_axis');
+    })
     ->get()
     ->map(function ($category) {
         return [

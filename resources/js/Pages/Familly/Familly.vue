@@ -35,7 +35,6 @@
             :key="category.id"
             :category="category"
             :depth="0"
-            @add-subcategory="openAddCategoryModal"
             @edit-category="openEditCategoryModal"
             @delete-category="confirmDelete"
             @add-attribute="openAddAttributeModal"
@@ -381,9 +380,9 @@ const openEditCategoryModal = (category) => {
 const saveCategory = async () => {
   saving.value = true;
   try {
-    const url = categoryForm.value.category_id 
-      ? `/api/subcategories/${isEditingCategory.value ? categoryForm.value.id : ''}`
-      : `/api/categories/${isEditingCategory.value ? categoryForm.value.id : ''}`;
+    const url = isEditingCategory.value 
+      ? `/api/categories/${categoryForm.value.id}` 
+      : '/api/categories';
     const method = isEditingCategory.value ? 'put' : 'post';
     
     const { data } = await axios[method](url, categoryForm.value);

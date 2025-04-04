@@ -9,8 +9,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        // Get all categories with their subcategories
-        $categories = Category::with('subcategories')
+        $categories = Category::with('subCategories')
             ->get();
         
         return response()->json([
@@ -59,8 +58,7 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        // Prevent deletion if category has subcategories
-        if ($category->subcategories()->exists()) {
+        if ($category->subCategories()->exists()) {
             return response()->json([
                 'success' => false,
                 'message' => 'Cannot delete category with existing subcategories'

@@ -18,17 +18,10 @@ use Illuminate\Support\Facades\Route;
 // });
 
 Route::prefix('categories')->group(function () {
-    // Get all categories and subcategories
     Route::get('/', [CategoryController::class, 'index']);
     Route::get('/categories-with-attributes', [CategoryController::class, 'categoriesRelatedData']);
-    
-    // Create new category
     Route::post('/', [CategoryController::class, 'store']);
-    
-    // Update category
     Route::put('/{category}', [CategoryController::class, 'update']);
-    
-    // Delete category
     Route::delete('/{category}', [CategoryController::class, 'destroy']);
     
 });

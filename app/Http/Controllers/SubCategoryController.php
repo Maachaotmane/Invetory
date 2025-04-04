@@ -19,32 +19,23 @@ class SubCategoryController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Subcategory created successfully',
-            'data' => $subcategory->load('category')
+            'data' => $subcategory
         ], 201);
     }
 
     public function update(Request $request, SubCategory $subCategory)
     {
-        // Ensure we're updating a subcategory
-        if (!$subCategory->category_id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'This is not a subcategory'
-            ], 422);
-        }
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
+        $request->validate([
             'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
         ]);
 
-        $subCategory->update($validated);
+        $subCategory->update($request->all());
 
         return response()->json([
             'success' => true,
             'message' => 'Subcategory updated successfully',
-            'data' => $subCategory->load('category')
+            'data' => $subCategory
         ]);
     }
 

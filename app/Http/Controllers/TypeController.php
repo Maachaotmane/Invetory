@@ -19,7 +19,7 @@ class TypeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Subcategory created successfully',
-            'data' => $type->load('category')
+            'data' => $type
         ], 201);
     }
 
@@ -44,7 +44,7 @@ class TypeController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Subcategory updated successfully',
-            'data' => $type->load('category')
+            'data' => $type
         ]);
     }
 

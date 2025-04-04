@@ -5,10 +5,7 @@
           <vue-feather :type="isExpanded ? 'minus' : 'plus'"></vue-feather>
         </span>
         <span class="category-name">{{ category.name }}</span>
-        <div class="category-actions">
-          <button class="btn btn-sm btn-outline-primary me-2" @click.stop="$emit('add-subcategory', category)">
-            + Subcategory
-          </button>
+        <div v-if="!category.category_id" class="category-actions">
           <button class="btn btn-sm btn-outline-secondary me-2" @click.stop="$emit('edit-category', category)">
             <vue-feather type="edit" size="14"></vue-feather>
           </button>
@@ -20,6 +17,12 @@
           </button>
           <button class="btn btn-sm btn-outline-primary me-2" @click.stop="$emit('add-attribute', category, 'measure')">
             + Measure
+          </button>
+          <button class="btn btn-sm btn-outline-primary me-2" @click.stop="$emit('add-attribute', category, 'sub-measure')">
+            + Sub Measure
+          </button>
+          <button class="btn btn-sm btn-outline-primary me-2" @click.stop="$emit('add-attribute', category, 'subcategorie')">
+            + Sub Category
           </button>
           <button class="btn btn-sm btn-outline-primary me-2" @click.stop="$emit('add-attribute', category, 'type')">
             + Type
@@ -120,22 +123,23 @@
           </div>
           <div v-else class="text-muted">No units</div>
         </div>
-  
-        <!-- Subcategories -->
-        <div v-if="category.sub_categories && category.sub_categories?.length > 0">
-          <CategoryNode
-            v-for="subcategory in category.sub_categories"
-            :key="subcategory.id"
-            :category="subcategory"
-            :depth="depth + 1"
-            @add-subcategory="$emit('add-subcategory', $event)"
-            @edit-category="$emit('edit-category', $event)"
-            @delete-category="$emit('delete-category', $event)"
-            @add-attribute="$emit('add-attribute', $event)"
-            @edit-attribute="$emit('edit-attribute', $event)"
-            @delete-attribute="$emit('delete-attribute', $event)"
-            @toggle-expand="$emit('toggle-expand', $event)"
-          />
+
+        <div class="attribute-section">
+          <h6>Sub Category</h6>
+          <div v-if="category.sub_categories?.length > 0" class="attribute-grid">
+            <div v-for="subcategorie in category.sub_categories" :key="'subcategorie-'+subcategorie.id" class="attribute-item">
+              <span>{{ subcategorie.name }}</span>
+              <div class="attribute-actions">
+                <button class="btn btn-sm btn-outline-secondary" @click="$emit('edit-attribute', subcategorie, 'subcategorie')">
+                  <vue-feather type="edit" size="14"></vue-feather>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" @click="$emit('delete-attribute', subcategorie, 'subcategorie')">
+                  <vue-feather type="trash-2" size="14"></vue-feather>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div v-else class="text-muted">No Sub Category</div>
         </div>
       </div>
     </div>

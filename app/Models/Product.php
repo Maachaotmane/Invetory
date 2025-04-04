@@ -49,7 +49,6 @@ class Product extends Model
         return $this->belongsTo(SubCategory::class);
     }
 
-
     public function subMeasure()
     {
         return $this->belongsTo(SubMeasure::class);

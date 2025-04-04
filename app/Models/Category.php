@@ -39,7 +39,7 @@ class Category extends Model
         return $this->hasMany(Measure::class);
     }
 
-    public function subMeasures()
+    public function sub_measures()
     {
         return $this->hasMany(SubMeasure::class);
     }
