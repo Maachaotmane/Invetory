@@ -1,13 +1,13 @@
 <template>
   <div class="header">
     <div class="header-left active">
-      <Link href="/dashboard" class="logo logo-normal">
+      <Link href="/" class="logo logo-normal">
         <img src="/Assets/img/logo2.png" alt="" />
       </Link>
-      <Link href="/dashboard" class="logo logo-white">
+      <Link href="/" class="logo logo-white">
         <img src="/Assets/img/logo-white.png" alt="" />
       </Link>
-      <Link href="/dashboard" class="logo-small">
+      <Link href="/" class="logo-small">
         <img src="/Assets/img/logo3.png" alt="" />
       </Link>
       <a id="toggle_btn" href="javascript:void(0);" @click="toggleSidebar">

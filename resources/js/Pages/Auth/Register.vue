@@ -8,7 +8,7 @@
                             <div class="login-logo logo-normal">
                                 <img src="/Assets/img/logo2.png" alt="img" />
                             </div>
-                            <router-link to="/dashboard" class="login-logo logo-white">
+                            <router-link to="/" class="login-logo logo-white">
                                 <img src="/Assets/img/logo-white.png" alt="" />
                             </router-link>
                             <div class="login-userheading">

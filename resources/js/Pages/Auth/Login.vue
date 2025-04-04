@@ -8,7 +8,7 @@
                             <div class="login-logo logo-normal">
                                 <img src="/Assets/img/logo2.png" alt="img" />
                             </div>
-                            <p to="/dashboard" class="login-logo logo-white">
+                            <p to="/" class="login-logo logo-white">
                                 <img src="/Assets/img/logo-white.png" alt="" />
                             </p>
                             <div class="login-userheading">
