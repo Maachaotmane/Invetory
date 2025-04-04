@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignId('type_id')->nullable()->constrained('types')->onDelete('set null');
             $table->foreignId('measure_id')->nullable()->constrained('measures')->onDelete('set null');
             $table->foreignId('sub_category_id')->nullable()->constrained('sub_categories')->onDelete('set null');
+            $table->foreignId('sub_measure_id')->nullable()->constrained('sub_measures')->onDelete('set null');
             $table->foreignId('store_id')->nullable()->constrained('stores')->onDelete('set null');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->string('reference')->required();

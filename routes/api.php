@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\MeasureController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\SubMeasureController;
 use App\Http\Controllers\TypeController;
 use App\Http\Controllers\UnitController;
 use Illuminate\Support\Facades\Route;
@@ -35,5 +36,6 @@ Route::prefix('categories')->group(function () {
 Route::resource('subcategories', SubCategoryController::class);
 Route::resource('types', TypeController::class);
 Route::resource('measures', MeasureController::class);
+Route::resource('sub-measures', SubMeasureController::class);
 Route::resource('units', UnitController::class);
 Route::resource('brands', BrandController::class);

@@ -15,9 +15,16 @@ return new class extends Migration {
             $table->string('name');
             $table->string('address');
             $table->string('phone');
-            $table->string('email');
+            $table->string('email')->nullable();
             $table->string('city')->nullable();
             $table->string('country')->nullable();
+            $table->string('I_F')->nullable();
+            $table->string('R_C')->nullable();
+            $table->string('I_C_E')->nullable();
+            $table->string('C_N_S_S')->nullable();
+            $table->string('C_I_N')->nullable();
+            $table->string('profile_image')->nullable();
+            $table->string('C_I_N_image')->nullable();
             $table->unsignedBigInteger('created_by');
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();

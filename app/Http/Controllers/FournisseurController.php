@@ -17,7 +17,9 @@ class FournisseurController extends Controller
         if ($request->has('searchFournisseur')) {
             $search = $request->input('searchFournisseur');
             $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
                   ->orWhere('email', 'like', "%{$search}%");
+
         }
 
         $fournisseurs = $query->paginate(10);
@@ -60,6 +62,13 @@ class FournisseurController extends Controller
             'email' => 'required|string|email|max:255|unique:fournisseurs,email',
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
+            'I_F' => 'nullable|string|max:255',
+            'R_C' => 'nullable|string|max:255',
+            'I_C_E' => 'nullable|string|max:255',
+            'C_N_S_S' => 'nullable|string|max:255',
+            'C_I_N' => 'nullable|string|max:255',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'C_I_N_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $validatedData['created_by'] = auth()->user()->id;
@@ -103,6 +112,13 @@ class FournisseurController extends Controller
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
             'created_by' => 'required|integer|exists:users,id',
+            'I_F' => 'nullable|string|max:255',
+            'R_C' => 'nullable|string|max:255',
+            'I_C_E' => 'nullable|string|max:255',
+            'C_N_S_S' => 'nullable|string|max:255',
+            'C_I_N' => 'nullable|string|max:255',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'C_I_N_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $fournisseur->update($validatedData);

@@ -28,7 +28,19 @@ class SubMeasureController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
+        ]);
+
+        $subMeasure = SubMeasure::create($request->all());
+
+        // return json response
+        return response()->json([
+            'success' => true,
+            'message' => 'Sub Measure created successfully',
+            'data' => $subMeasure
+        ], 201);
     }
 
     /**
@@ -52,7 +64,18 @@ class SubMeasureController extends Controller
      */
     public function update(Request $request, SubMeasure $subMeasure)
     {
-        //
+        $request->validate([
+            'category_id' => 'required|exists:categories,id',
+            'name' => 'required|string|max:255',
+        ]);
+
+        $subMeasure->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sub Measure updated successfully',
+            'data' => $subMeasure
+        ]);
     }
 
     /**
@@ -60,6 +83,11 @@ class SubMeasureController extends Controller
      */
     public function destroy(SubMeasure $subMeasure)
     {
-        //
+        $subMeasure->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Sub Measure deleted successfully'
+        ]);
     }
 }

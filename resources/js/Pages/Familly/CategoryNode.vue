@@ -66,6 +66,24 @@
           </div>
           <div v-else class="text-muted">No measures</div>
         </div>
+
+        <div class="attribute-section">
+          <h6>Sub Measures</h6>
+          <div v-if="category.sub_measures?.length > 0" class="attribute-grid">
+            <div v-for="measure in category.sub_measures" :key="'sub-measure-'+measure.id" class="attribute-item">
+              <span>{{ measure.name }}</span>
+              <div class="attribute-actions">
+                <button class="btn btn-sm btn-outline-secondary" @click="$emit('edit-attribute', measure, 'sub-measure')">
+                  <vue-feather type="edit" size="14"></vue-feather>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" @click="$emit('delete-attribute', measure, 'sub-measure')">
+                  <vue-feather type="trash-2" size="14"></vue-feather>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div v-else class="text-muted">No Sub Measures</div>
+        </div>
   
         <div class="attribute-section">
           <h6>Types</h6>

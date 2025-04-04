@@ -23,6 +23,13 @@ class ClientSeeder extends Seeder
                 'credit_limit' => $faker->randomFloat(2, 1000, 10000),
                 'total_due_amount' => $faker->randomFloat(2, 0, 5000),
                 'created_by' => 1, // Fixed value
+                'I_F' => $faker->randomNumber(8),
+                'R_C' => $faker->randomNumber(8),
+                'I_C_E' => $faker->randomNumber(8),
+                'C_N_S_S' => $faker->randomNumber(8),
+                'C_I_N' => $faker->randomNumber(8),
+                'profile_image' => $faker->imageUrl(640, 480, 'people'),
+                'C_I_N_image' => $faker->imageUrl(640, 480, 'business'),
             ]);
         }
     }

@@ -25,6 +25,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'x_axis' => 'nullable|string',
             'y_axis' => 'nullable|string',
+            'quantity_alert' => 'nullable|integer',
             'description' => 'nullable|string',
         ]);
 
@@ -43,6 +44,7 @@ class CategoryController extends Controller
             'name' => 'required|string|max:255',
             'x_axis' => 'nullable|string',
             'y_axis' => 'nullable|string',
+            'quantity_alert' => 'nullable|integer',
             'description' => 'nullable|string',
         ]);
 
@@ -76,7 +78,7 @@ class CategoryController extends Controller
     //related data for category
     public function categoriesRelatedData()
     {
-        $categories = Category::with('brands', 'units', 'types', 'measures', 'subCategories')
+        $categories = Category::with('brands', 'units', 'types', 'measures', 'subCategories', 'subMeasures')
             ->get();
 
         return response()->json([
