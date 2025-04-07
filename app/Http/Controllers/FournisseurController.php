@@ -58,15 +58,9 @@ class FournisseurController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-<<<<<<< Updated upstream
-            'address' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'email' => 'nullable|string|email|max:255|unique:fournisseurs,email',
-=======
             'email' => 'nullable|string|email|max:255|unique:fournisseurs',
             'address' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
->>>>>>> Stashed changes
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
             'credit_limit' => 'nullable|numeric',
@@ -120,29 +114,6 @@ class FournisseurController extends Controller
      * Update the specified resource in storage.
      */
 
-<<<<<<< Updated upstream
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'address' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'email' => 'nullable|string|email|max:255|unique:fournisseurs,email,' . $fournisseur->id,
-            'city' => 'nullable|string|max:255',
-            'country' => 'nullable|string|max:255',
-            'created_by' => 'required|integer|exists:users,id',
-            'I_F' => 'nullable|string|max:255',
-            'R_C' => 'nullable|string|max:255',
-            'I_C_E' => 'nullable|string|max:255',
-            'C_N_S_S' => 'nullable|string|max:255',
-            'C_I_N' => 'nullable|string|max:255',
-            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'C_I_N_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        $fournisseur->update($validatedData);
-
-        return redirect()->route('home.index');
-    }
-=======
      public function update(Request $request, int $id)
      {
          $fournisseur = Fournisseur::findOrFail($id);
@@ -192,7 +163,6 @@ class FournisseurController extends Controller
  
          return redirect()->route('home.index')->with('success', 'Fournisseur updated successfully!');
      }
->>>>>>> Stashed changes
 
     /**
      * Remove the specified resource from storage.

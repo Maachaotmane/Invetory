@@ -61,13 +61,8 @@ class ClientController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|string|email|max:255|unique:clients',
-<<<<<<< Updated upstream
-            'address' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
-=======
             'address' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
->>>>>>> Stashed changes
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
             'credit_limit' => 'nullable|numeric',
@@ -125,13 +120,8 @@ class ClientController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'nullable|string|email|max:255|unique:clients,email,' . $client->id,
-<<<<<<< Updated upstream
-            'address' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
-=======
             'address' => 'nullable|string|max:255',
             'phone' => 'nullable|string|max:255',
->>>>>>> Stashed changes
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
             'created_by' => 'required|exists:users,id',
