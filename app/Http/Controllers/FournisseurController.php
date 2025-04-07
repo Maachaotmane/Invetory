@@ -58,11 +58,19 @@ class FournisseurController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
+<<<<<<< Updated upstream
             'address' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'email' => 'nullable|string|email|max:255|unique:fournisseurs,email',
+=======
+            'email' => 'nullable|string|email|max:255|unique:fournisseurs',
+            'address' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
+>>>>>>> Stashed changes
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
+            'credit_limit' => 'nullable|numeric',
+            'total_due_amount' => 'nullable|numeric',
             'I_F' => 'nullable|string|max:255',
             'R_C' => 'nullable|string|max:255',
             'I_C_E' => 'nullable|string|max:255',
@@ -72,10 +80,20 @@ class FournisseurController extends Controller
             'C_I_N_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $validatedData['created_by'] = auth()->user()->id;
+        if ($request->hasFile('profile_image')) {
+            $profileImagePath = $request->file('profile_image')->store('fournisseur_profile_images', 'public');
+            $validatedData['profile_image'] = $profileImagePath;
+        }
+
+        if ($request->hasFile('C_I_N_image')) {
+            $cinImagePath = $request->file('C_I_N_image')->store('fournisseur_cin_images', 'public');
+            $validatedData['C_I_N_image'] = $cinImagePath;
+        }
+
+        $validatedData['created_by'] = auth()->id();
         Fournisseur::create($validatedData);
 
-        return redirect()->route('home.index');
+        return redirect()->route('home.index')->with('success', 'Fournisseur created successfully!');
     }
 
     /**
@@ -101,10 +119,8 @@ class FournisseurController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $id)
-    {
-        $fournisseur = Fournisseur::findOrFail($id);
 
+<<<<<<< Updated upstream
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255',
@@ -126,6 +142,57 @@ class FournisseurController extends Controller
 
         return redirect()->route('home.index');
     }
+=======
+     public function update(Request $request, int $id)
+     {
+         $fournisseur = Fournisseur::findOrFail($id);
+ 
+         $validatedData = $request->validate([
+             'name' => 'required|string|max:255',
+             'email' => 'nullable|string|email|max:255|unique:fournisseurs,email,' . $fournisseur->id,
+             'address' => 'nullable|string|max:255',
+             'phone' => 'nullable|string|max:255',
+             'city' => 'nullable|string|max:255',
+             'country' => 'nullable|string|max:255',
+             'created_by' => 'required|exists:users,id',
+             'credit_limit' => 'nullable|numeric',
+             'total_due_amount' => 'nullable|numeric',
+             'I_F' => 'nullable|string|max:255',
+             'R_C' => 'nullable|string|max:255',
+             'I_C_E' => 'nullable|string|max:255',
+             'C_N_S_S' => 'nullable|string|max:255',
+             'C_I_N' => 'nullable|string|max:255',
+             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+             'C_I_N_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+         ]);
+ 
+         if ($request->hasFile('profile_image')) {
+             if ($fournisseur->profile_image) {
+                 Storage::disk('public')->delete($fournisseur->profile_image);
+             }
+ 
+             $profileImagePath = $request->file('profile_image')->store('fournisseur_profile_images', 'public');
+             $validatedData['profile_image'] = $profileImagePath;
+         } else {
+             $validatedData['profile_image'] = $fournisseur->profile_image;
+         }
+ 
+         if ($request->hasFile('C_I_N_image')) {
+             if ($fournisseur->C_I_N_image) {
+                 Storage::disk('public')->delete($fournisseur->C_I_N_image);
+             }
+ 
+             $cinImagePath = $request->file('C_I_N_image')->store('fournisseur_cin_images', 'public');
+             $validatedData['C_I_N_image'] = $cinImagePath;
+         } else {
+             $validatedData['C_I_N_image'] = $fournisseur->C_I_N_image;
+         }
+ 
+         $fournisseur->update($validatedData);
+ 
+         return redirect()->route('home.index')->with('success', 'Fournisseur updated successfully!');
+     }
+>>>>>>> Stashed changes
 
     /**
      * Remove the specified resource from storage.
