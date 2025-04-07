@@ -10,8 +10,72 @@
               </div>
             </div>
             <div class="modal-body">
-              <form @submit.prevent="submitForm">
-                <div class="grid grid-cols-2 gap-4">
+              <form @submit.prevent="submitForm" enctype="multipart/form-data">
+                <div>
+                  <label class="block text-gray-700 font-semibold mb-1"
+                    >Profile Image</label
+                  >
+                  <div class="flex items-center gap-4">
+                    <div
+                      v-if="profileImagePreview"
+                      class="w-20 h-20 rounded-full overflow-hidden border border-gray-300"
+                    >
+                      <img
+                        :src="profileImagePreview"
+                        class="w-full h-full object-cover"
+                        alt="Profile preview"
+                      />
+                    </div>
+                    <div class="flex-1">
+                      <input
+                        type="file"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        accept="image/*"
+                        @change="handleProfileImageChange"
+                      />
+                      <span
+                        class="text-sm text-red-500"
+                        v-if="form.errors.profile_image"
+                      >
+                        {{ form.errors.profile_image }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-gray-700 font-semibold mb-1 mt-2"
+                    >C.I.N Image</label
+                  >
+                  <div class="flex items-center gap-4">
+                    <div
+                      v-if="cinImagePreview"
+                      class="w-20 h-20 rounded-lg overflow-hidden border border-gray-300"
+                    >
+                      <img
+                        :src="cinImagePreview"
+                        class="w-full h-full object-cover"
+                        alt="C.I.N preview"
+                      />
+                    </div>
+                    <div class="flex-1">
+                      <input
+                        type="file"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                        accept="image/*"
+                        @change="handleCinImageChange"
+                      />
+                      <span
+                        class="text-sm text-red-500"
+                        v-if="form.errors.C_I_N_image"
+                      >
+                        {{ form.errors.C_I_N_image }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mt-2">
                   <div>
                     <label class="block text-gray-700 font-semibold mb-1"
                       >Name</label
@@ -238,6 +302,10 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
 import Swal from "sweetalert2";
+import { ref } from "vue";
+
+const profileImagePreview = ref(null);
+const cinImagePreview = ref(null);
 
 const form = useForm({
   name: "",
@@ -253,17 +321,50 @@ const form = useForm({
   I_C_E: "",
   C_N_S_S: "",
   C_I_N: "",
-  profile_image: "",
-  C_I_N_image: "",
+  profile_image: null,
+  C_I_N_image: null,
 });
+
+const handleProfileImageChange = (event) => {
+  const file = event.target.files[0];
+  form.profile_image = file;
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      profileImagePreview.value = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    profileImagePreview.value = null;
+  }
+};
+
+const handleCinImageChange = (event) => {
+  const file = event.target.files[0];
+  form.C_I_N_image = file;
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      cinImagePreview.value = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    cinImagePreview.value = null;
+  }
+};
 
 const submitForm = () => {
   form.post(route("clients.store"), {
+    preserveScroll: true,
     onSuccess: () => {
       Swal.fire("Success", "Client created successfully!", "success");
       form.reset();
+      profileImagePreview.value = null;
+      cinImagePreview.value = null;
       document.getElementById("add-client").classList.remove("show");
-      document.querySelector(".modal-backdrop").remove();
+      document.querySelector(".modal-backdrop")?.remove();
       document.body.style.overflow = "auto";
       document.body.style.paddingRight = "";
     },

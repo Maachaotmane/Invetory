@@ -17,8 +17,8 @@ class ClientController extends Controller
         if ($request->has('searchClient')) {
             $search = $request->input('searchClient');
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('C_I_N', 'like', "%{$search}%");
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('C_I_N', 'like', "%{$search}%");
         }
 
         $clients = $query->paginate(10);
@@ -36,8 +36,8 @@ class ClientController extends Controller
         if ($request->has('searchClient')) {
             $search = $request->input('searchClient');
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                 ->orWhere('C_I_N', 'like', "%{$search}%");
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('C_I_N', 'like', "%{$search}%");
         }
 
         $clients = $query->orderByRaw('COALESCE(credit_limit, 0) - COALESCE(total_due_amount, 0) asc')->get();
@@ -60,9 +60,9 @@ class ClientController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:clients',
-            'address' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
+            'email' => 'nullable|string|email|max:255|unique:clients',
+            'address' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
             'credit_limit' => 'nullable|numeric',
@@ -76,10 +76,20 @@ class ClientController extends Controller
             'C_I_N_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $validatedData['created_by'] = auth()->user()->id;
+        if ($request->hasFile('profile_image')) {
+            $profileImagePath = $request->file('profile_image')->store('client_profile_images', 'public');
+            $validatedData['profile_image'] = $profileImagePath;
+        }
+
+        if ($request->hasFile('C_I_N_image')) {
+            $cinImagePath = $request->file('C_I_N_image')->store('client_cin_images', 'public');
+            $validatedData['C_I_N_image'] = $cinImagePath;
+        }
+
+        $validatedData['created_by'] = auth()->id();
         Client::create($validatedData);
 
-        return redirect()->route('home.index');
+        return redirect()->route('home.index')->with('success', 'Client created successfully!');
     }
 
     /**
@@ -109,9 +119,9 @@ class ClientController extends Controller
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:clients,email,' . $client->id,
-            'address' => 'required|string|max:255',
-            'phone' => 'required|string|max:255',
+            'email' => 'nullable|string|email|max:255|unique:clients,email,' . $client->id,
+            'address' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:255',
             'country' => 'nullable|string|max:255',
             'created_by' => 'required|exists:users,id',
@@ -126,9 +136,31 @@ class ClientController extends Controller
             'C_I_N_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        if ($request->hasFile('profile_image')) {
+            if ($client->profile_image) {
+                Storage::disk('public')->delete($client->profile_image);
+            }
+
+            $profileImagePath = $request->file('profile_image')->store('client_profile_images', 'public');
+            $validatedData['profile_image'] = $profileImagePath;
+        } else {
+            $validatedData['profile_image'] = $client->profile_image;
+        }
+
+        if ($request->hasFile('C_I_N_image')) {
+            if ($client->C_I_N_image) {
+                Storage::disk('public')->delete($client->C_I_N_image);
+            }
+
+            $cinImagePath = $request->file('C_I_N_image')->store('client_cin_images', 'public');
+            $validatedData['C_I_N_image'] = $cinImagePath;
+        } else {
+            $validatedData['C_I_N_image'] = $client->C_I_N_image;
+        }
+
         $client->update($validatedData);
 
-        return redirect()->route('home.index');
+        return redirect()->route('home.index')->with('success', 'Client updated successfully!');
     }
 
     /**
